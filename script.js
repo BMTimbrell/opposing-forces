@@ -12,11 +12,14 @@ window.addEventListener('load', () => {
 
     const game = new Game(canvas);
     
-    function animate() {
+    let lastTime = 0;
+    function animate(timeStamp) {
+        const deltaTime = timeStamp - lastTime;
+        lastTime = timeStamp;
         ctx.clearRect(0, 0, canvas.width, canvas.height);
-        game.render(ctx);
+        game.render(ctx, deltaTime);
         window.requestAnimationFrame(animate);
     }
 
-    animate();
+    animate(0);
 });

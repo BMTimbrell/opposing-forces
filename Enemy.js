@@ -21,11 +21,15 @@ export default class Enemy {
         // check collision with projectiles
         this.game.projectilesPool.forEach(projectile => {
             if (!projectile.free && this.game.checkCollision(projectile, this)) {
-                this.markedForDeletion = true;
+                this.hit(1);
                 projectile.reset();
-                if (!this.game.gameOver) this.game.score++;
             }
         });
+
+        if (this.lives < 1) {
+            this.markedForDeletion = true;
+            if (!this.game.gameOver) this.game.score++;
+        }
 
         // check collision with player
         if (this.game.checkCollision(this, this.game.player)) {
@@ -40,5 +44,9 @@ export default class Enemy {
             this.game.gameOver = true;
             this.markedForDeletion = true;
         }
+    }
+
+    hit(damage) {
+        this.lives -= damage;
     }
 }
