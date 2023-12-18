@@ -22,7 +22,7 @@ export default class Projectile {
     }
 
     start(x, y) {
-        this.x = x;
+        this.x = x - this.width / 2;
         this.y = y;
         this.free = false; 
     }

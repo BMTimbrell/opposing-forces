@@ -6,6 +6,7 @@ export default class Player {
         this.x = this.game.width / 2 - this.width / 2;
         this.y = this.game.height - this.height;
         this.speed = 5;
+        this.lives = 3;
     }
 
     draw(context) {
@@ -18,12 +19,18 @@ export default class Player {
         if (this.game.keys.indexOf('d') > -1) this.x += this.speed;
 
         //horizontal boundaries
-        if (this.x < 0) this.x = 0;
-        else if (this.x > this.game.width - this.width) this.x = this.game.width - this.width;
+        if (this.x < -this.width / 2) this.x = -this.width / 2;
+        else if (this.x > this.game.width - this.width / 2) this.x = this.game.width - this.width / 2;
     }
 
     shoot() {
         const projectile = this.game.getProjectile();
-        if (projectile) projectile.start(this.x, this.y);
+        if (projectile) projectile.start(this.x + this.width / 2, this.y);
+    }
+
+    restart() {
+        this.x = this.game.width / 2 - this.width / 2;
+        this.y = this.game.height - this.height;
+        this.lives = 3;
     }
 }
