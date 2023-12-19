@@ -8,6 +8,7 @@ export default class Enemy {
         this.positionX = positionX;
         this.positionY = positionY;
         this.markedForDeletion = false;
+        this.lives = 1;
     }
     
     draw(context) {

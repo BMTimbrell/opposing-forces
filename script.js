@@ -12,12 +12,19 @@ window.addEventListener('load', () => {
 
     const game = new Game(canvas);
     
+    const fps = 1000 / 60;
     let lastTime = 0;
+
     function animate(timeStamp) {
         const deltaTime = timeStamp - lastTime;
-        lastTime = timeStamp;
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        game.render(ctx, deltaTime);
+
+        if (deltaTime > fps) {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            game.render(ctx);
+            game.update();
+            lastTime = timeStamp;
+        }
+        
         window.requestAnimationFrame(animate);
     }
 

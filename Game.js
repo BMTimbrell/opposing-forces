@@ -13,7 +13,6 @@ export default class Game {
         this.projectilesPool = [];
         this.numberOfProjectiles = 10;
         this.createProjectiles();
-        this.fired = false;
 
         this.columns = 2;
         this.rows = 2;
@@ -23,52 +22,36 @@ export default class Game {
         this.waves.push(new Wave(this));
         this.waveCount = 1;
 
-        this.spriteUpdate = false;
-        this.spriteTimer = 0;
-        this.spriteInterval = 500;
-
         this.score = 0;
         this.gameOver = false;
 
         window.addEventListener('keydown', e => {
             if (this.keys.indexOf(e.key) === -1) this.keys.push(e.key);
-
-            if (e.key === ' ' && !this.fired) this.player.shoot();
-            this.fired = true;
-
             if (e.key === 'r' && this.gameOver) this.restart();
         });
 
         window.addEventListener('keyup', e => {
-            this.fired = false;
             const index = this.keys.indexOf(e.key);
             if (index > -1) this.keys.splice(index, 1);
         });
     }
 
-    render(context, deltaTime) {
-        if (this.spriteTimer > this.spriteInterval) {
-            this.spriteUpdate = true;
-            this.spriteTimer = 0;
-        } else {
-            this.spriteUpdate = false;
-            this.spriteTimer += deltaTime;
-        }
-
-        this.player.draw(context);
+    update() {
         this.player.update();
-        this.projectilesPool.forEach(projectile => {
-            projectile.update();
-            projectile.draw(context);
-        });
+        this.projectilesPool.forEach(projectile => projectile.update());
         this.waves.forEach(wave => {
-            wave.render(context);
             if (wave.enemies.length < 1 && !wave.nextWaveTrigger && !this.gameOver) {
                 this.newWave();
                 this.waveCount++;
                 wave.nextWaveTrigger = true;
             }
         });
+    }
+
+    render(context) {
+        this.player.draw(context);
+        this.projectilesPool.forEach(projectile => projectile.draw(context));
+        this.waves.forEach(wave => wave.render(context));
         this.drawStatusText(context);
     }
 
