@@ -9,6 +9,10 @@ window.addEventListener('load', () => {
     ctx.fillStyle = 'white';
     ctx.strokeStyle = 'white';
     ctx.font = '30px Impact';
+    ctx.mozImageSmoothingEnabled = false;
+    ctx.webkitImageSmoothingEnabled = false;
+    ctx.msImageSmoothingEnabled = false;
+    ctx.imageSmoothingEnabled = false;
 
     const game = new Game(canvas);
     

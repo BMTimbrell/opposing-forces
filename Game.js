@@ -7,6 +7,7 @@ export default class Game {
         this.canvas = canvas;
         this.width = this.canvas.width;
         this.height = this.canvas.height;
+        this.scale = 10;
         this.keys = [];
         this.player = new Player(this);
 
@@ -16,7 +17,7 @@ export default class Game {
 
         this.columns = 2;
         this.rows = 2;
-        this.enemySize = 60;
+        this.enemySize = 8 * this.scale;
 
         this.waves = [];
         this.waves.push(new Wave(this));
@@ -49,15 +50,15 @@ export default class Game {
     }
 
     render(context) {
-        this.player.draw(context);
         this.projectilesPool.forEach(projectile => projectile.draw(context));
+        this.player.draw(context);
         this.waves.forEach(wave => wave.render(context));
         this.drawStatusText(context);
     }
 
     createProjectiles() {
         for (let i = 0; i < this.numberOfProjectiles; i++) {
-            this.projectilesPool.push(new Projectile());
+            this.projectilesPool.push(new Projectile(this));
         }
     }
 

@@ -9,10 +9,22 @@ export default class Enemy {
         this.positionY = positionY;
         this.markedForDeletion = false;
         this.lives = 1;
+        this.image = document.getElementById('ships');
     }
     
     draw(context) {
-        context.strokeRect(this.x, this.y, this.width, this.height);
+        /*context.strokeRect(this.x, this.y, this.width, this.height);*/
+        context.drawImage(
+            this.image, 
+            64, 
+            17, 
+            this.width / this.game.scale, 
+            this.height / this.game.scale,
+            this.x,
+            this.y,
+            this.width,
+            this.height
+        );
     }
 
     update(x, y) {

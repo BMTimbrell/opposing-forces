@@ -1,16 +1,28 @@
 export default class Projectile {
-    constructor() {
-        this.width = 4;
-        this.height = 20;
+    constructor(game) {
+        this.game = game;
+        this.width = 1 * this.game.scale;
+        this.height = 3 * this.game.scale;
         this.x = 0;
         this.y = 0;
         this.speed = 20;
         this.free = true;
+        this.image = document.getElementById('projectiles');
     }
 
     draw(context) {
         if (!this.free) {
-            context.fillRect(this.x, this.y, this.width, this.height);
+            context.drawImage(
+                this.image, 
+                19, 
+                3, 
+                this.width / this.game.scale, 
+                this.height / this.game.scale,
+                this.x,
+                this.y,
+                this.width,
+                this.height
+            );
         }
     }
 
