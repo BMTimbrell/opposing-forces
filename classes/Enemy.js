@@ -9,13 +9,13 @@ export default class Enemy {
         this.positionY = positionY;
         this.markedForDeletion = false;
         this.image = document.getElementById('ships');
-        this.frameX = 64;
+        this.frameX = 8;
         this.frameY = 17;
         this.animationDelay = 3;
         this.animationTimer = this.animationDelay;
-        this.animationFrameX = 72;
+        this.animationFrameX = 9; 
         this.animationFrameY = 48;
-        this.maxAnimationFrame = this.animationFrameX + 8 * 4;
+        this.maxAnimationFrame = this.animationFrameX + 4;
         this.lives = 1;
     }
     
@@ -23,7 +23,7 @@ export default class Enemy {
         /*context.strokeRect(this.x, this.y, this.width, this.height);*/
         context.drawImage(
             this.image, 
-            this.frameX, 
+            this.frameX * this.width / this.game.scale, 
             this.frameY, 
             this.width / this.game.scale, 
             this.height / this.game.scale,
@@ -54,7 +54,7 @@ export default class Enemy {
             this.frameY = this.animationFrameY;
             this.animationTimer--;
             if (this.animationTimer === 0) {
-                this.animationFrameX += 8;
+                this.animationFrameX ++;
                 this.animationTimer = this.animationDelay;
             }
             if (this.frameX > this.maxAnimationFrame) { 
@@ -65,17 +65,14 @@ export default class Enemy {
         }
 
         // check collision with player
-        if (this.game.checkCollision(this, this.game.player)) {
-            this.markedForDeletion = true;
-            if (!this.game.gameOver && this.game.score > 0) this.game.score--;
+        if (this.game.checkCollision(this, this.game.player) && this.lives > 0) {
+            this.lives = 0;
             this.game.player.lives--;
-            if (this.game.player.lives < 1) this.game.gameOver = true;
         }
 
         // lose condition
-        if (this.y + this.height > this.game.height) {
+        if (this.y + this.height > this.game.height || this.game.player.lives < 1) {
             this.game.gameOver = true;
-            this.markedForDeletion = true;
         }
     }
 

@@ -4,7 +4,7 @@ export default class Player {
         this.width = 8 * this.game.scale;
         this.height = 8 * this.game.scale;
         this.x = this.game.width / 2 - this.width / 2;
-        this.y =  this.game.height - this.height;
+        this.y =  this.game.height - this.height - 20;
         this.speed = 10;
         this.lives = 3;
         this.attackInterval = 15;
@@ -12,9 +12,18 @@ export default class Player {
         this.canFire = true;
         this.frameX = 1;
         this.image = document.getElementById('ships');
+        this.jetsImage = document.getElementById('animations');
+        this.animationStartFrame = 5;
+        this.xOffset = 0;
+        this.jetsFrameX = this.animationStartFrame;
+        this.jetsFrameX2 = this.animationStartFrame + 2;
+        this.animationDelay = 4;
+        this.animationTimer = this.animationDelay;
+        this.maxAnimationFrame = this.jetsFrameX + 4;
     }
 
     draw(context) {
+        // draw ship
         context.drawImage(
             this.image, 
             this.frameX * this.width / this.game.scale, 
@@ -26,6 +35,31 @@ export default class Player {
             this.width,
             this.height
         );
+        
+        //draw jets
+        context.drawImage(
+            this.jetsImage, 
+            this.jetsFrameX * this.width / this.game.scale, 
+            0, 
+            this.width / this.game.scale, 
+            this.height / this.game.scale,
+            this.x - this.xOffset,
+            this.y + this.height - 10,
+            this.width,
+            this.height
+        );
+
+        context.drawImage(
+            this.jetsImage, 
+            this.jetsFrameX2 * this.width / this.game.scale, 
+            0, 
+            this.width / this.game.scale, 
+            this.height / this.game.scale,
+            this.x - 10 - this.xOffset,
+            this.y + this.height - 10,
+            this.width,
+            this.height
+        );
     }
 
     update() {
@@ -33,11 +67,14 @@ export default class Player {
         if (this.game.keys.indexOf('a') > -1) {
             this.x -= this.speed;
             this.frameX = 0;
+            this.xOffset = 8;
         } else if (this.game.keys.indexOf('d') > -1) {
             this.x += this.speed;
             this.frameX = 2;
+            this.xOffset = -8;
         } else {
             this.frameX = 1;
+            this.xOffset = 0;
         }
 
         // shooting
@@ -54,11 +91,25 @@ export default class Player {
             this.canFire = false;
             this.attackTimer++;
         }
+
+        // jets animation
+        this.animationTimer--;
+        if (this.animationTimer === 0) {
+            this.animationTimer = this.animationDelay;
+            this.jetsFrameX++;
+            this.jetsFrameX2++;
+            if (this.jetsFrameX === this.maxAnimationFrame) {
+                this.jetsFrameX = this.animationStartFrame;
+            }
+            if (this.jetsFrameX2 === this.maxAnimationFrame) {
+                this.jetsFrameX2 = this.animationStartFrame;
+            }
+        }
     }
 
     shoot() {
         const projectile = this.game.getProjectile();
-        if (projectile) projectile.start(this.x + this.width / 2, this.y);
+        if (projectile) projectile.start(this.x + this.width / 2 - this.xOffset, this.y);
         this.attackTimer = 0;
     }
 
