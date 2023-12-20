@@ -17,6 +17,6 @@
     image-rendering: crisp-edges;
 }
 
-#ships, #projectiles {
+#ships, #projectiles, #animations {
     display: none;
 }
