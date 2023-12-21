@@ -107,8 +107,8 @@ export class Rocket extends Projectile {
                 0, 
                 16, 
                 16,
-                this.x - this.width / 2 + 20,
-                this.y - this.height / 2,
+                this.x,
+                this.y,
                 this.width,
                 this.height
             );
@@ -138,7 +138,7 @@ export class Rocket extends Projectile {
                     this.reset();
                 }
             }
-            if (this.explosionTimer < this.animationDelay - 3) this.canDamage = false;
+            if (this.explosionTimer < this.animationDelay - 1) this.canDamage = false;
         }
     }
 
@@ -148,5 +148,7 @@ export class Rocket extends Projectile {
         this.width = 160;
         this.height = 160;
         this.canDamage = true;
+        this.x -= this.width / 2 + 20;
+        this.y -= this.height / 2;
     }
 }
