@@ -1,3 +1,5 @@
+import { Rocket } from './Projectile.js';
+
 export default class Player {
     constructor(game) {
         this.game = game;
@@ -16,7 +18,6 @@ export default class Player {
         this.animationStartFrame = 5;
         this.xOffset = 0;
         this.jetsFrameX = this.animationStartFrame;
-        this.jetsFrameX2 = this.animationStartFrame + 2;
         this.animationDelay = 4;
         this.animationTimer = this.animationDelay;
         this.maxAnimationFrame = this.jetsFrameX + 4;
@@ -40,22 +41,10 @@ export default class Player {
         context.drawImage(
             this.jetsImage, 
             this.jetsFrameX * this.width / this.game.scale, 
-            0, 
+            8, 
             this.width / this.game.scale, 
             this.height / this.game.scale,
             this.x - this.xOffset,
-            this.y + this.height - 10,
-            this.width,
-            this.height
-        );
-
-        context.drawImage(
-            this.jetsImage, 
-            this.jetsFrameX2 * this.width / this.game.scale, 
-            0, 
-            this.width / this.game.scale, 
-            this.height / this.game.scale,
-            this.x - 10 - this.xOffset,
             this.y + this.height - 10,
             this.width,
             this.height
@@ -79,10 +68,26 @@ export default class Player {
 
         // shooting
         if (this.game.keys.indexOf(' ') > -1 && this.canFire) this.shoot();
+        if (this.game.keys.indexOf('e') > -1 && this.canFire) {
+            const rocket = new Rocket(
+                this.game, 
+                this.jetsImage, 
+                this.jetsFrameX, 
+                this.jetsFrameX2,
+                this.animationDelay,
+                this.animationTimer,
+                this.animationStartFrame,
+                this.maxAnimationFrame
+            );
+            this.game.projectilesPool.push(rocket);
+            rocket.start(this.x + this.width / 2 - this.xOffset, this.y);
+            this.attackTimer = 0;
+        }
 
         // horizontal boundaries
         if (this.x < -this.width / 2) this.x = -this.width / 2;
-        else if (this.x > this.game.width - this.width / 2) this.x = this.game.width - this.width / 2;
+        else if (this.x > this.game.width - this.width / 2) 
+            this.x = this.game.width - this.width / 2;
         
         // attack interval for shooting
         if (this.attackTimer > this.attackInterval) {
@@ -97,12 +102,8 @@ export default class Player {
         if (this.animationTimer === 0) {
             this.animationTimer = this.animationDelay;
             this.jetsFrameX++;
-            this.jetsFrameX2++;
             if (this.jetsFrameX === this.maxAnimationFrame) {
                 this.jetsFrameX = this.animationStartFrame;
-            }
-            if (this.jetsFrameX2 === this.maxAnimationFrame) {
-                this.jetsFrameX2 = this.animationStartFrame;
             }
         }
     }

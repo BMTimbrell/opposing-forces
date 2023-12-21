@@ -8,6 +8,7 @@ export default class Projectile {
         this.speed = 20;
         this.free = true;
         this.image = document.getElementById('projectiles');
+        this.damage = 1;
     }
 
     draw(context) {
@@ -41,5 +42,73 @@ export default class Projectile {
 
     reset() {
         this.free = true;
+    }
+}
+
+export class Rocket extends Projectile {
+    constructor(
+        game, 
+        jetsImage, 
+        jetsFrameX, 
+        jetsFrameX2,
+        animationDelay,
+        animationTimer,
+        animationStartFrame,
+        maxAnimationFrame
+
+    ) {
+        super(game);
+        this.damage = 2;
+        this.width = 4 * this.game.scale;
+        this.height = 5 * this.game.scale;
+        this.jetsImage = jetsImage;
+        this.jetsFrameX = jetsFrameX;
+        this.jetsFrameX2 = jetsFrameX2;
+        this.animationDelay = animationDelay;
+        this.animationTimer = animationTimer;
+        this.animationStartFrame = animationStartFrame;
+        this.maxAnimationFrame = maxAnimationFrame;
+    }
+
+    draw(context) {
+        if (!this.free) {
+            context.drawImage(
+                this.image, 
+                42, 
+                17, 
+                this.width / this.game.scale, 
+                this.height / this.game.scale,
+                this.x,
+                this.y,
+                this.width,
+                this.height
+            );
+
+            // rocket fire
+            context.drawImage(
+                this.jetsImage, 
+                this.jetsFrameX * 8, 
+                16, 
+                8, 
+                8,
+                this.x - this.width / 2 - 5,
+                this.y + this.height - 10,
+                80,
+                80
+            );
+        }
+    }
+
+    update() {
+        super.update();
+        // animation
+        this.animationTimer--;
+        if (this.animationTimer === 0) {
+            this.animationTimer = this.animationDelay;
+            this.jetsFrameX++;
+            if (this.jetsFrameX === this.maxAnimationFrame) {
+                this.jetsFrameX = this.animationStartFrame;
+            }
+        }
     }
 }

@@ -42,7 +42,7 @@ export default class Enemy {
         if (this.lives > 0) {
             this.game.projectilesPool.forEach(projectile => {
                 if (!projectile.free && this.game.checkCollision(projectile, this)) {
-                    this.hit(1);
+                    this.hit(projectile.damage);
                     projectile.reset();
                 }
             });
