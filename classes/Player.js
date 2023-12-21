@@ -116,7 +116,7 @@ export default class Player {
 
     restart() {
         this.x = this.game.width / 2 - this.width / 2;
-        this.y = this.game.height - this.height;
+        this.y =  this.game.height - this.height - 20;
         this.lives = 3;
     }
 }

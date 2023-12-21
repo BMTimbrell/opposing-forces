@@ -15,16 +15,7 @@ export default class Game {
         this.numberOfProjectiles = 10;
         this.createProjectiles();
 
-        this.columns = 2;
-        this.rows = 2;
-        this.enemySize = 8 * this.scale;
-
-        this.waves = [];
-        this.waves.push(new Wave(this));
-        this.waveCount = 1;
-
-        this.score = 0;
-        this.gameOver = false;
+        this.restart();
 
         window.addEventListener('keydown', e => {
             if (this.keys.indexOf(e.key) === -1) this.keys.push(e.key);
@@ -119,7 +110,7 @@ export default class Game {
 
         this.columns = 2;
         this.rows = 2;
-        this.enemySize = 60;
+        this.enemySize = 80;
 
         this.waves = [];
         this.waves.push(new Wave(this));
