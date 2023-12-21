@@ -1,3 +1,5 @@
+import { Rocket } from './Projectile.js';
+
 export default class Enemy {
     constructor(game, positionX, positionY) {
         this.game = game;
@@ -42,8 +44,13 @@ export default class Enemy {
         if (this.lives > 0) {
             this.game.projectilesPool.forEach(projectile => {
                 if (!projectile.free && this.game.checkCollision(projectile, this)) {
-                    this.hit(projectile.damage);
-                    projectile.reset();
+                    if (projectile instanceof Rocket) {
+                        if (projectile.canDamage) this.hit(projectile.damage);
+                        if (!projectile.isBoomTime) projectile.explode();
+                    } else {
+                        this.hit(projectile.damage);
+                        projectile.reset();
+                    }
                 }
             });
         }

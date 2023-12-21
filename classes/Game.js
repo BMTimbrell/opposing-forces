@@ -41,9 +41,9 @@ export default class Game {
     }
 
     render(context) {
+        this.waves.forEach(wave => wave.render(context));
         this.projectilesPool.forEach(projectile => projectile.draw(context));
         this.player.draw(context);
-        this.waves.forEach(wave => wave.render(context));
         this.drawStatusText(context);
     }
 

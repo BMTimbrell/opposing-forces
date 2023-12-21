@@ -68,12 +68,12 @@ export default class Player {
 
         // shooting
         if (this.game.keys.indexOf(' ') > -1 && this.canFire) this.shoot();
+        // fire rocket
         if (this.game.keys.indexOf('e') > -1 && this.canFire) {
             const rocket = new Rocket(
                 this.game, 
                 this.jetsImage, 
                 this.jetsFrameX, 
-                this.jetsFrameX2,
                 this.animationDelay,
                 this.animationTimer,
                 this.animationStartFrame,

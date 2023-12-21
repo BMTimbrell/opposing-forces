@@ -50,7 +50,6 @@ export class Rocket extends Projectile {
         game, 
         jetsImage, 
         jetsFrameX, 
-        jetsFrameX2,
         animationDelay,
         animationTimer,
         animationStartFrame,
@@ -58,20 +57,25 @@ export class Rocket extends Projectile {
 
     ) {
         super(game);
-        this.damage = 2;
+        this.damage = 1;
         this.width = 4 * this.game.scale;
         this.height = 5 * this.game.scale;
         this.jetsImage = jetsImage;
         this.jetsFrameX = jetsFrameX;
-        this.jetsFrameX2 = jetsFrameX2;
         this.animationDelay = animationDelay;
         this.animationTimer = animationTimer;
         this.animationStartFrame = animationStartFrame;
         this.maxAnimationFrame = maxAnimationFrame;
+        this.explosionImage = document.getElementById('explosion');
+        this.explosionTimer = this.animationDelay;
+        this.isBoomTime = false;
+        this.explosionStartFrame = 0;
+        this.explosionFrameX = this.explosionStartFrame;
+        this.canDamage = false;
     }
 
     draw(context) {
-        if (!this.free) {
+        if (!this.free && !this.isBoomTime) {
             context.drawImage(
                 this.image, 
                 42, 
@@ -96,6 +100,19 @@ export class Rocket extends Projectile {
                 80,
                 80
             );
+        } else if (!this.free && this.isBoomTime) {
+            context.drawImage(
+                this.explosionImage, 
+                this.explosionFrameX * 16, 
+                0, 
+                16, 
+                16,
+                this.x - this.width / 2 + 20,
+                this.y - this.height / 2,
+                this.width,
+                this.height
+            );
+            
         }
     }
 
@@ -110,5 +127,26 @@ export class Rocket extends Projectile {
                 this.jetsFrameX = this.animationStartFrame;
             }
         }
+
+        // exploding
+        if (this.isBoomTime) {
+            this.explosionTimer--;
+            if (this.explosionTimer === 0) {
+                this.explosionTimer = this.animationDelay;
+                this.explosionFrameX++;
+                if (this.explosionFrameX === this.maxAnimationFrame) {
+                    this.reset();
+                }
+            }
+            if (this.explosionTimer < this.animationDelay - 3) this.canDamage = false;
+        }
+    }
+
+    explode() {
+        this.isBoomTime = true;
+        this.speed = 0;
+        this.width = 160;
+        this.height = 160;
+        this.canDamage = true;
     }
 }
