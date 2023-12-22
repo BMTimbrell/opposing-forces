@@ -16,8 +16,8 @@ export default class Enemy {
         this.animationDelay = 3;
         this.animationTimer = this.animationDelay;
         this.animationFrameX = 9; 
-        this.animationFrameY = 48;
-        this.maxAnimationFrame = this.animationFrameX + 4;
+        this.animationFrameY = 56;
+        this.maxAnimationFrame = this.animationFrameX + 3;
         this.lives = 1;
     }
     
@@ -55,16 +55,17 @@ export default class Enemy {
             });
         }
         
+        // enemy dies
         if (this.lives < 1) {
             this.image = document.getElementById('animations');
             this.frameX = this.animationFrameX
             this.frameY = this.animationFrameY;
             this.animationTimer--;
             if (this.animationTimer === 0) {
-                this.animationFrameX ++;
+                this.animationFrameX++;
                 this.animationTimer = this.animationDelay;
             }
-            if (this.frameX > this.maxAnimationFrame) { 
+            if (this.animationFrameX > this.maxAnimationFrame) { 
                 this.markedForDeletion = true;
             }
 
