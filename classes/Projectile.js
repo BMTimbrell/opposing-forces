@@ -171,3 +171,42 @@ export class StrongLaser extends Projectile {
         this.type = 'strongLaser'
     }
 }
+
+export class EnemyProjectile extends Projectile {
+    constructor(game) {
+        super(game);
+        this.speed = 5;
+        this.damage = 1;
+        this.frameX = 42;
+        this.frameY = 3;
+        this.width = 4 * this.game.scale;
+        this.height = 2 * this.game.scale;
+        this.type = 'enemyProjectile';
+    }
+
+    update() {
+        if (!this.free) {
+            this.y += this.speed;
+            if (this.y > this.game.height) this.reset();
+        }
+    }
+
+    draw(context) {
+        context.save();
+        context.scale(1, -1);
+        if (!this.free) {
+            context.drawImage(
+                this.image, 
+                this.frameX, 
+                this.frameY, 
+                this.width / this.game.scale, 
+                this.height / this.game.scale,
+                this.x,
+                -this.y - this.height,
+                this.width,
+                this.height
+            );
+        }
+        context.restore();
+    }
+}

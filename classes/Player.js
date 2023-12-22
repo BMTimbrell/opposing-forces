@@ -1,4 +1,4 @@
-import Projectile, { Rocket, StrongLaser } from './Projectile.js';
+import { Rocket, EnemyProjectile } from './Projectile.js';
 
 export default class Player {
     constructor(game) {
@@ -116,7 +116,20 @@ export default class Player {
             }
         }
 
+        // change sprite when have dual shot upgrade
         if (this.upgrades.dualShot) this.frameY = 2;
+
+        // collision with enemy projectiles
+        this.game.projectilesPool.forEach(projectile => {
+            if (
+                !projectile.free && 
+                projectile instanceof EnemyProjectile && 
+                this.game.checkCollision(projectile, this)
+            ) {
+                this.lives -= projectile.damage;
+                projectile.reset();
+            }
+        });
     }
 
     shoot() {

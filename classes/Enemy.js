@@ -1,4 +1,4 @@
-import { Rocket } from './Projectile.js';
+import { EnemyProjectile, Rocket } from './Projectile.js';
 
 export default class Enemy {
     constructor(game, positionX, positionY) {
@@ -44,7 +44,11 @@ export default class Enemy {
         // check collision with projectiles
         if (this.lives > 0) {
             this.game.projectilesPool.forEach(projectile => {
-                if (!projectile.free && this.game.checkCollision(projectile, this)) {
+                if (
+                    !projectile.free && 
+                    !(projectile instanceof EnemyProjectile) && 
+                    this.game.checkCollision(projectile, this)
+                ) {
                     if (projectile instanceof Rocket) {
                         if (projectile.canDamage) this.hit(projectile.damage);
                         if (!projectile.isBoomTime) projectile.explode();
@@ -107,6 +111,24 @@ export class Shooter extends Enemy {
         super(game, positionX, positionY);
         this.lives = 2;
         this.frameX = 8;
-        this.frameY = 2
+        this.frameY = 2;
+        this.shootChance = 0.01;
+    }
+
+    update(x, y) {
+        super.update(x, y);
+        if (Math.random() < this.shootChance) {
+            const projectile = this.game.getProjectile('enemyProjectile');
+            if (projectile) projectile.start(this.x + this.width / 2, this.y + this.height);
+        }
+    }
+}
+
+export class ArmouredShooter extends Shooter {
+    constructor(game, positionX, positionY) {
+        super(game, positionX, positionY);
+        this.lives = 3;
+        this.frameX = 4;
+        this.frameY = 4;
     }
 }

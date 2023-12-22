@@ -1,5 +1,5 @@
 import Player from './Player.js';
-import Projectile, { StrongLaser } from './Projectile.js';
+import Projectile, { EnemyProjectile, StrongLaser } from './Projectile.js';
 import Wave from './Wave.js';
 
 export default class Game {
@@ -54,6 +54,10 @@ export default class Game {
 
         for (let i = 0; i < this.numberOfProjectiles; i++) {
             this.projectilesPool.push(new StrongLaser(this));
+        }
+
+        for (let i = 0; i < this.numberOfProjectiles; i++) {
+            this.projectilesPool.push(new EnemyProjectile(this));
         }
     }
 

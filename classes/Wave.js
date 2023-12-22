@@ -1,4 +1,4 @@
-import Enemy, { ArmouredEnemy, Shooter } from './Enemy.js';
+import Enemy, { ArmouredEnemy, Shooter, ArmouredShooter } from './Enemy.js';
 
 export default class Wave {
     constructor(game) {
@@ -52,6 +52,27 @@ export default class Wave {
 
             return chance;
         };
+
+        this.armouredShooterChance = () => {
+            let chance = 0;
+            switch (this.game.waveCount) {
+                case 1:
+                    chance = 0;
+                    break;
+                case 2: 
+                    chance = 0;
+                    break;
+                case 3: 
+                    chance = 0.1;
+                    break;
+                case 4:
+                    chance = 0.2;
+                default:
+                    chance = 0.5;
+            }
+
+            return chance;
+        }
         this.create();
     }
 
@@ -81,6 +102,7 @@ export default class Wave {
                 const enemyY = y * this.game.enemySize;
 
                 const enemyType = (
+                    Math.random() < this.armouredShooterChance() ? ArmouredShooter : 
                     Math.random() < this.shooterChance() ? Shooter : 
                     Math.random() < this.armouredEnemyChance() ? ArmouredEnemy : Enemy
                 );
