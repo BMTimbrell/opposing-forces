@@ -11,14 +11,15 @@ export default class Enemy {
         this.positionY = positionY;
         this.markedForDeletion = false;
         this.image = document.getElementById('ships');
-        this.frameX = 8;
-        this.frameY = 17;
+        this.frameX = 6;
+        this.frameY = 1;
         this.animationDelay = 3;
         this.animationTimer = this.animationDelay;
         this.animationFrameX = 9; 
-        this.animationFrameY = 56;
+        this.animationFrameY = 7;
         this.maxAnimationFrame = this.animationFrameX + 3;
-        this.lives = 1;
+        this.maxLives = 1;
+        this.lives = this.maxLives;
     }
     
     draw(context) {
@@ -26,7 +27,7 @@ export default class Enemy {
         context.drawImage(
             this.image, 
             this.frameX * this.width / this.game.scale, 
-            this.frameY, 
+            this.frameY * this.height / this.game.scale, 
             this.width / this.game.scale, 
             this.height / this.game.scale,
             this.x,
@@ -69,7 +70,10 @@ export default class Enemy {
                 this.markedForDeletion = true;
             }
 
-            if (!this.game.gameOver && this.markedForDeletion) this.game.score++;
+            if (!this.game.gameOver && this.markedForDeletion) {
+                this.game.score += this.maxLives;
+                this.game.gold += this.maxLives * 10;
+            }
         }
 
         // check collision with player
@@ -89,9 +93,20 @@ export default class Enemy {
     }
 }
 
-export class strongEnemy extends Enemy {
+export class ArmouredEnemy extends Enemy {
     constructor(game, positionX, positionY) {
         super(game, positionX, positionY);
-        this.lives = 3;
+        this.lives = 2;
+        this.frameX = 7;
+        this.frameY = 2;
+    }
+}
+
+export class Shooter extends Enemy {
+    constructor(game, positionX, positionY) {
+        super(game, positionX, positionY);
+        this.lives = 2;
+        this.frameX = 8;
+        this.frameY = 2
     }
 }

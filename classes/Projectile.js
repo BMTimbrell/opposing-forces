@@ -5,6 +5,9 @@ export default class Projectile {
         this.height = 3 * this.game.scale;
         this.x = 0;
         this.y = 0;
+        this.type = 'projectile';
+        this.frameX = 19;
+        this.frameY = 3;
         this.speed = 20;
         this.free = true;
         this.image = document.getElementById('projectiles');
@@ -15,8 +18,8 @@ export default class Projectile {
         if (!this.free) {
             context.drawImage(
                 this.image, 
-                19, 
-                3, 
+                this.frameX, 
+                this.frameY, 
                 this.width / this.game.scale, 
                 this.height / this.game.scale,
                 this.x,
@@ -60,6 +63,9 @@ export class Rocket extends Projectile {
         this.damage = 1;
         this.width = 4 * this.game.scale;
         this.height = 5 * this.game.scale;
+        this.frameX = 42;
+        this.frameY = 17;
+        this.type = 'rocket';
         this.jetsImage = jetsImage;
         this.jetsFrameX = jetsFrameX;
         this.animationDelay = animationDelay;
@@ -71,6 +77,7 @@ export class Rocket extends Projectile {
         this.isBoomTime = false;
         this.explosionStartFrame = 0;
         this.explosionFrameX = this.explosionStartFrame;
+        this.explosionFrameY = 0;
         this.canDamage = false;
     }
 
@@ -104,7 +111,7 @@ export class Rocket extends Projectile {
             context.drawImage(
                 this.explosionImage, 
                 this.explosionFrameX * 16, 
-                0, 
+                this.explosionFrameY, 
                 16, 
                 16,
                 this.x,
@@ -150,5 +157,17 @@ export class Rocket extends Projectile {
         this.canDamage = true;
         this.x -= this.width / 2 + 20;
         this.y -= this.height / 2;
+    }
+}
+
+export class StrongLaser extends Projectile {
+    constructor(game) {
+        super(game);
+        this.damage = 3;
+        this.frameX = 10;
+        this.frameY = 9;
+        this.width = 3 * this.game.scale;
+        this.height = 6 * this.game.scale;
+        this.type = 'strongLaser'
     }
 }

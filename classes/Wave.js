@@ -1,4 +1,4 @@
-import Enemy from './Enemy.js';
+import Enemy, { ArmouredEnemy, Shooter } from './Enemy.js';
 
 export default class Wave {
     constructor(game) {
@@ -7,11 +7,51 @@ export default class Wave {
         this.height = this.game.rows * this.game.enemySize;
         this.x = this.game.width * 0.5 - this.width * 0.5;
         this.y = -this.height;
-        this.speed = 3;
+        this.speed = 2;
         this.speedX = Math.random() < 0.5 ? -this.speed : this.speed;
         this.speedY = 0;
         this.enemies = [];
         this.nextWaveTrigger = false;
+        this.armouredEnemyChance = () => {
+            let chance = 0;
+            switch (this.game.waveCount) {
+                case 1:
+                    chance = 0;
+                    break;
+                case 2: 
+                    chance = 0.2;
+                    break;
+                case 3: 
+                    chance = 0.3;
+                    break;
+                case 4:
+                    chance = 0.4;
+                default:
+                    chance = 0.5;
+            }
+
+            return chance;
+        };
+        this.shooterChance = () => {
+            let chance = 0;
+            switch (this.game.waveCount) {
+                case 1:
+                    chance = 0;
+                    break;
+                case 2: 
+                    chance = 0;
+                    break;
+                case 3: 
+                    chance = 0.1;
+                    break;
+                case 4:
+                    chance = 0.2;
+                default:
+                    chance = 0.5;
+            }
+
+            return chance;
+        };
         this.create();
     }
 
@@ -37,9 +77,14 @@ export default class Wave {
     create() {
         for (let y = 0; y < this.game.rows; y++) {
             for (let x = 0; x < this.game.columns; x++) {
-                let enemyX = x * this.game.enemySize;
-                let enemyY = y * this.game.enemySize;
-                this.enemies.push(new Enemy(this.game, enemyX, enemyY));
+                const enemyX = x * this.game.enemySize;
+                const enemyY = y * this.game.enemySize;
+
+                const enemyType = (
+                    Math.random() < this.shooterChance() ? Shooter : 
+                    Math.random() < this.armouredEnemyChance() ? ArmouredEnemy : Enemy
+                );
+                this.enemies.push(new enemyType(this.game, enemyX, enemyY));
             }
         }
     }

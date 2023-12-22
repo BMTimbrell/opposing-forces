@@ -1,4 +1,4 @@
-import { Rocket } from './Projectile.js';
+import Projectile, { Rocket, StrongLaser } from './Projectile.js';
 
 export default class Player {
     constructor(game) {
@@ -13,14 +13,23 @@ export default class Player {
         this.attackTimer = this.attackInterval;
         this.canFire = true;
         this.frameX = 1;
+        this.frameY = 0;
         this.image = document.getElementById('ships');
         this.jetsImage = document.getElementById('animations');
         this.animationStartFrame = 5;
         this.xOffset = 0;
         this.jetsFrameX = this.animationStartFrame;
+        this.jetsFrameY = 8;
         this.animationDelay = 4;
         this.animationTimer = this.animationDelay;
         this.maxAnimationFrame = this.jetsFrameX + 4;
+        this.upgrades = {
+            rocket: true,
+            fastJets: false,
+            dualShot: false,
+            strongLasers: false,
+            shield: false
+        };
     }
 
     draw(context) {
@@ -28,7 +37,7 @@ export default class Player {
         context.drawImage(
             this.image, 
             this.frameX * this.width / this.game.scale, 
-            0, 
+            this.frameY * this.width / this.game.scale, 
             this.width / this.game.scale, 
             this.height / this.game.scale,
             this.x,
@@ -41,7 +50,7 @@ export default class Player {
         context.drawImage(
             this.jetsImage, 
             this.jetsFrameX * this.width / this.game.scale, 
-            8, 
+            this.jetsFrameY, 
             this.width / this.game.scale, 
             this.height / this.game.scale,
             this.x - this.xOffset,
@@ -69,7 +78,7 @@ export default class Player {
         // shooting
         if (this.game.keys.indexOf(' ') > -1 && this.canFire) this.shoot();
         // fire rocket
-        if (this.game.keys.indexOf('e') > -1 && this.canFire) {
+        if (this.game.keys.indexOf('e') > -1 && this.canFire && this.upgrades.rocket) {
             const rocket = new Rocket(
                 this.game, 
                 this.jetsImage, 
@@ -106,11 +115,24 @@ export default class Player {
                 this.jetsFrameX = this.animationStartFrame;
             }
         }
+
+        if (this.upgrades.dualShot) this.frameY = 2;
     }
 
     shoot() {
-        const projectile = this.game.getProjectile();
-        if (projectile) projectile.start(this.x + this.width / 2 - this.xOffset, this.y);
+        const projectileType = !this.upgrades.strongLasers ? 'projectile' : 'strongLaser';
+        if (!this.upgrades.dualShot) {
+            const projectile = this.game.getProjectile(projectileType);
+            if (projectile) projectile.start(this.x + this.width / 2 - this.xOffset, this.y);
+        } else {
+            const projectiles = this.game.getProjectile(projectileType, 2);
+            const projectile_1 = projectiles[0];
+            const projectile_2 = projectiles[1];
+            if (projectile_1 && projectile_2) {
+                projectile_1.start(this.x + 15 - this.xOffset, this.y);
+                projectile_2.start(this.x + 65 - this.xOffset, this.y);
+            }
+        }
         this.attackTimer = 0;
     }
 

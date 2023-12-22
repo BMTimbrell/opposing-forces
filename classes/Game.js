@@ -1,5 +1,5 @@
 import Player from './Player.js';
-import Projectile from './Projectile.js';
+import Projectile, { StrongLaser } from './Projectile.js';
 import Wave from './Wave.js';
 
 export default class Game {
@@ -51,11 +51,24 @@ export default class Game {
         for (let i = 0; i < this.numberOfProjectiles; i++) {
             this.projectilesPool.push(new Projectile(this));
         }
+
+        for (let i = 0; i < this.numberOfProjectiles; i++) {
+            this.projectilesPool.push(new StrongLaser(this));
+        }
     }
 
-    getProjectile() {
+    getProjectile(type = 'projectile', amount = 1) {
+        // Find right amount of projectiles to give to player
+        const projectiles = [];
         for (let i = 0; i < this.projectilesPool.length; i++) {
-            if (this.projectilesPool[i].free) return this.projectilesPool[i];
+            if (
+                this.projectilesPool[i].free && 
+                this.projectilesPool[i].type === type
+            ) {
+                if (amount === 1) return this.projectilesPool[i];
+                projectiles.push(this.projectilesPool[i]);
+                if (projectiles.length === amount) return projectiles;
+            }
         }
     }
 
@@ -76,9 +89,10 @@ export default class Game {
         context.shadowColor = 'black';
         context.fillText(`Score: ${this.score}`, 20, 40);
         context.fillText(`Wave: ${this.waveCount}`, 20, 80);
+        context.fillText(`Gold: ${this.gold}`, 20, 120);
 
         for (let i = 0; i < this.player.lives; i++) {
-            context.fillRect(10 * i + 20, 100, 5, 20);
+            context.fillRect(10 * i + 20, 140, 5, 20);
         }
 
         if (this.gameOver) {
@@ -95,10 +109,10 @@ export default class Game {
     newWave() {
         if (
             Math.random() < 0.5 && 
-            this.columns * this.enemySize < this.width * 0.8
+            this.columns * this.enemySize < this.width * 0.6
         ) {
-            this.columns++
-        } else if (this.rows * this.enemySize < this.height * 0.6) {
+            this.columns++;
+        } else if (this.rows * this.enemySize < this.height * 0.7) {
             this.rows++;
         }
         
@@ -109,14 +123,15 @@ export default class Game {
         this.player.restart();
 
         this.columns = 2;
-        this.rows = 2;
+        this.rows = 1;
         this.enemySize = 80;
 
         this.waves = [];
-        this.waves.push(new Wave(this));
         this.waveCount = 1;
+        this.waves.push(new Wave(this));
 
         this.score = 0;
+        this.gold = 0;
         this.gameOver = false;
     }
 }
