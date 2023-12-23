@@ -1,15 +1,24 @@
 import Player from './Player.js';
 import Projectile, { EnemyProjectile, StrongLaser } from './Projectile.js';
 import Wave from './Wave.js';
+import UpgradeMenu from './UpgradeMenu.js';
 
 export default class Game {
     constructor(canvas) {
         this.canvas = canvas;
+        this.canvasPosition = this.canvas.getBoundingClientRect();
         this.width = this.canvas.width;
         this.height = this.canvas.height;
         this.scale = 10;
         this.keys = [];
         this.player = new Player(this);
+        this.mouse = {
+            x: undefined,
+            y: undefined,
+            width: 0.1,
+            height: 0.1
+        };
+        this.upgradeMenu = new UpgradeMenu(this);
 
         this.projectilesPool = [];
         this.numberOfProjectiles = 10;
@@ -25,6 +34,17 @@ export default class Game {
         window.addEventListener('keyup', e => {
             const index = this.keys.indexOf(e.key);
             if (index > -1) this.keys.splice(index, 1);
+        });
+
+        // update mouse position
+        this.canvas.addEventListener('mousemove', e => {
+            this.mouse.x = e.x - this.canvasPosition.left;
+            this.mouse.y = e.y - this.canvasPosition.top;
+        });
+
+        this.canvas.addEventListener('mouseleave', e => {
+            this.mouse.x = undefined;
+            this.mouse.y = undefined;
         });
     }
 
@@ -45,6 +65,7 @@ export default class Game {
         this.projectilesPool.forEach(projectile => projectile.draw(context));
         this.player.draw(context);
         this.drawStatusText(context);
+        this.upgradeMenu.draw(context);
     }
 
     createProjectiles() {
@@ -91,6 +112,7 @@ export default class Game {
         context.shadowOffsetX = 2;
         context.shadowOffsetY = 2;
         context.shadowColor = 'black';
+        context.font = '20px Pixel';
         context.fillText(`Score: ${this.score}`, 20, 40);
         context.fillText(`Wave: ${this.waveCount}`, 20, 80);
         context.fillText(`Gold: ${this.gold}`, 20, 120);
@@ -101,10 +123,10 @@ export default class Game {
 
         if (this.gameOver) {
             context.textAlign = 'center';
-            context.font = '100px Impact';
-            context.fillText('Game Over!', this.width * 0.5, this.height * 0.5);
+            context.font = '50px Pixel';
+            context.fillText('Game Over', this.width * 0.5, this.height * 0.5);
 
-            context.font = '20px Impact';
+            context.font = '20px Pixel';
             context.fillText('Press R to restart!', this.width * 0.5, this.height * 0.5 + 50);
         }
         context.restore();

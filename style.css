@@ -4,6 +4,17 @@
     padding: 0;
 }
 
+@font-face {
+    font-family: 'Pixel';
+    src: url('PressStart2P-Regular.ttf');
+    font-weight: normal;
+    font-style: normal;
+}
+
+p {
+    font-family: 'Pixel';
+}
+
 #canvas {
     border: 5px solid black;
     position: absolute;
@@ -15,6 +26,7 @@
     image-rendering: -webkit-crisp-edges;
     image-rendering: pixelated;
     image-rendering: crisp-edges;
+    font-family: 'Pixel';
 }
 
 #ships, #projectiles, #animations, #explosion {

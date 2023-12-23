@@ -24,7 +24,7 @@ export default class Player {
         this.animationTimer = this.animationDelay;
         this.maxAnimationFrame = this.jetsFrameX + 4;
         this.upgrades = {
-            rocket: true,
+            rocket: false,
             fastJets: false,
             dualShot: false,
             strongLasers: false,

@@ -112,7 +112,7 @@ export class Shooter extends Enemy {
         this.lives = 2;
         this.frameX = 8;
         this.frameY = 2;
-        this.shootChance = 0.01;
+        this.shootChance = 0.002;
     }
 
     update(x, y) {

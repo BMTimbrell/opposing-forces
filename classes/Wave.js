@@ -32,6 +32,7 @@ export default class Wave {
 
             return chance;
         };
+
         this.shooterChance = () => {
             let chance = 0;
             switch (this.game.waveCount) {
@@ -73,6 +74,7 @@ export default class Wave {
 
             return chance;
         }
+
         this.create();
     }
 
