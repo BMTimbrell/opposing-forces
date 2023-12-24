@@ -86,6 +86,15 @@ export default class Enemy {
             this.game.player.lives--;
         }
 
+        if (
+            this.game.player.upgrades.shield && 
+            this.game.player.shield &&
+            this.game.checkCollision(this, this.game.player.shield) && 
+            this.lives > 0
+        ) {
+            this.lives = 0;
+        }
+
         // lose condition
         if (this.y + this.height > this.game.height || this.game.player.lives < 1) {
             this.game.gameOver = true;

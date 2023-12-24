@@ -1,5 +1,5 @@
 import Player from './Player.js';
-import Projectile, { EnemyProjectile, StrongLaser } from './Projectile.js';
+import Projectile, { EnemyProjectile, StrongLaser, Rocket } from './Projectile.js';
 import Wave from './Wave.js';
 import UpgradeMenu from './UpgradeMenu.js';
 
@@ -22,7 +22,7 @@ export default class Game {
 
         this.projectilesPool = [];
         this.enemyProjectilesOnScreen = 0;
-        this.numberOfProjectiles = 10;
+        this.numberOfProjectiles = 20;
         this.createProjectiles();
 
         this.restart();
@@ -78,9 +78,9 @@ export default class Game {
 
     render(context) {
         this.waves.forEach(wave => wave.render(context));
-        if (!this.upgradeMenu.isShowing) this.player.draw(context);
 
         this.projectilesPool.forEach(projectile => projectile.draw(context));
+        if (!this.upgradeMenu.isShowing) this.player.draw(context);
         this.drawStatusText(context);
 
         if (this.upgradeMenu.isShowing) this.upgradeMenu.draw(context);
@@ -89,15 +89,14 @@ export default class Game {
     createProjectiles() {
         for (let i = 0; i < this.numberOfProjectiles; i++) {
             this.projectilesPool.push(new Projectile(this));
-        }
-
-        for (let i = 0; i < this.numberOfProjectiles; i++) {
             this.projectilesPool.push(new StrongLaser(this));
         }
 
-        for (let i = 0; i < this.numberOfProjectiles; i++) {
+        for (let i = 0; i < 10; i++) {
             this.projectilesPool.push(new EnemyProjectile(this));
         }
+
+        this.projectilesPool.push(new Rocket(this));
     }
 
     getProjectile(type = 'projectile', amount = 1) {
@@ -146,9 +145,7 @@ export default class Game {
         }
 
         // rocket cooldown
-        for (let i = 0; i < this.player.rocketCooldown; i++) {
-            context.strokeRect(20, 180, 200, 15);
-        }
+        context.strokeRect(20, 180, 200, 15);
         context.save();
         if (this.player.rocketOnCooldown) context.fillStyle = 'red';
         for (let i = 0; i < this.player.rocketCooldownTimer; i++) {

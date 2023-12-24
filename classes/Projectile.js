@@ -46,36 +46,26 @@ export default class Projectile {
     reset() {
         if (this instanceof EnemyProjectile) {
             this.game.enemyProjectilesOnScreen--;
-            console.log(this);
         }
         this.free = true;
     }
 }
 
 export class Rocket extends Projectile {
-    constructor(
-        game, 
-        jetsImage, 
-        jetsFrameX, 
-        animationDelay,
-        animationTimer,
-        animationStartFrame,
-        maxAnimationFrame
-
-    ) {
+    constructor(game) {
         super(game);
-        this.damage = !this.game.player.upgrades.rocketDamage ? 2 : 3;
+        this.damage = 2;
         this.width = 4 * this.game.scale;
         this.height = 5 * this.game.scale;
         this.frameX = 42;
         this.frameY = 17;
         this.type = 'rocket';
-        this.jetsImage = jetsImage;
-        this.jetsFrameX = jetsFrameX;
-        this.animationDelay = animationDelay;
-        this.animationTimer = animationTimer;
-        this.animationStartFrame = animationStartFrame;
-        this.maxAnimationFrame = maxAnimationFrame;
+        this.jetsImage = document.getElementById('animations');
+        this.animationStartFrame = 5;
+        this.jetsFrameX = this.animationStartFrame;
+        this.animationDelay = 4;
+        this.animationTimer = this.animationDelay;
+        this.maxAnimationFrame =  this.jetsFrameX + 4;
         this.explosionImage = document.getElementById('explosion');
         this.explosionTimer = this.animationDelay;
         this.isBoomTime = false;
@@ -128,6 +118,7 @@ export class Rocket extends Projectile {
     }
 
     update() {
+        if (this.game.player.upgrades.rocketDamage) this.damage = 3;
         super.update();
         // animation
         this.animationTimer--;
@@ -142,10 +133,10 @@ export class Rocket extends Projectile {
         // exploding
         if (this.isBoomTime) {
             this.explosionTimer--;
-            if (this.explosionTimer === 0) {
+            if (this.explosionTimer <= 0) {
                 this.explosionTimer = this.animationDelay;
                 this.explosionFrameX++;
-                if (this.explosionFrameX === this.maxAnimationFrame) {
+                if (this.explosionFrameX >= this.maxAnimationFrame) {
                     this.reset();
                 }
             }
@@ -161,6 +152,18 @@ export class Rocket extends Projectile {
         this.canDamage = true;
         this.x -= this.width / 2 + 20;
         this.y -= this.height / 2;
+    }
+
+    reset() {
+        this.canDamage = false;
+        this.isBoomTime = false;
+        this.explosionFrameX = this.explosionStartFrame;
+        this.explosionTimer = this.animationDelay;
+        this.speed = 20;
+        this.jetsFrameX = this.animationStartFrame;
+        this.width = 4 * this.game.scale;
+        this.height = 5 * this.game.scale;
+        super.reset();
     }
 }
 

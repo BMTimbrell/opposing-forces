@@ -5,9 +5,9 @@ export default class UpgradeMenu {
     constructor(game) {
         this.game = game;
         this.width = 400;
-        this.height = 600;
+        this.height = 660;
         this.x = (game.width - this.width) / 2;
-        this.y = (game.height - this.height) / 2 + 50;
+        this.y = (game.height - this.height) / 2 + 55;
         this.gap = 15;
         this.isShowing = false;
         this.buttons = [
@@ -33,7 +33,8 @@ export default class UpgradeMenu {
                     50
                 ),
                 name: 'rocket',
-                upgradeCost: 30
+                upgradeCost: 30,
+                isEnabled: true
             },
             {
                 button: new Button(
@@ -45,7 +46,125 @@ export default class UpgradeMenu {
                     50
                 ),
                 name: 'rocketDamage',
-                upgradeCost: 50
+                upgradeCost: 50,
+                isEnabled: false
+            },
+            {
+                button: new Button(
+                    this.game, 
+                    this.x + this.width - 50 - this.gap, 
+                    this.y + this.gap * 10, 
+                    'BUY',
+                    50, 
+                    50
+                ),
+                name: 'rapidFire',
+                upgradeCost: 50,
+                isEnabled: true
+            },
+            {
+                button: new Button(
+                    this.game, 
+                    this.x + this.width - 50 - this.gap, 
+                    this.y + this.gap * 15, 
+                    'BUY',
+                    50, 
+                    50
+                ),
+                name: 'improvedJets',
+                upgradeCost: 50,
+                isEnabled: true
+            },
+            {
+                button: new Button(
+                    this.game, 
+                    this.x + this.width - 50 - this.gap, 
+                    this.y + this.gap * 20, 
+                    'BUY',
+                    50, 
+                    50
+                ),
+                name: 'dualShot',
+                upgradeCost: 50,
+                isEnabled: true
+            },
+            {
+                button: new Button(
+                    this.game, 
+                    this.x + this.width - 50 - this.gap, 
+                    this.y + this.gap * 25, 
+                    'BUY',
+                    50, 
+                    50
+                ),
+                name: 'strongLasers',
+                upgradeCost: 50,
+                isEnabled: true
+            },
+            {
+                button: new Button(
+                    this.game, 
+                    this.x + this.width - 50 - this.gap, 
+                    this.y + this.gap * 30, 
+                    'BUY',
+                    50, 
+                    50
+                ),
+                name: 'increasedLives',
+                upgradeCost: 50,
+                isEnabled: true
+            },
+            {
+                button: new Button(
+                    this.game, 
+                    this.x + this.width - 50 - this.gap, 
+                    this.y + this.gap * 30, 
+                    'BUY',
+                    50, 
+                    50
+                ),
+                name: 'increasedLives_2',
+                upgradeCost: 50,
+                isEnabled: false
+            },
+            {
+                button: new Button(
+                    this.game, 
+                    this.x + this.width - 50 - this.gap, 
+                    this.y + this.gap * 35, 
+                    'BUY',
+                    50, 
+                    50
+                ),
+                name: 'shield',
+                upgradeCost: 50,
+                isEnabled: true
+            },
+            {
+                button: new Button(
+                    this.game, 
+                    this.x + this.width - 50 - this.gap, 
+                    this.y + this.gap * 10, 
+                    'BUY',
+                    50, 
+                    50
+                ),
+                name: 'rapidFire_2',
+                upgradeCost: 50,
+                isEnabled: false
+            },
+            {
+                button: new Button(
+                    this.game, 
+                    this.x + this.width - 50 - this.gap, 
+                    this.y + this.gap * 5, 
+                    'BUY',
+                    50, 
+                    50
+                ),
+                name: 'reducedRocketCooldown',
+                upgradeCost: 50,
+                isEnabled: false
             }
         ]
 
@@ -72,7 +191,7 @@ export default class UpgradeMenu {
         if (!this.game.player.upgrades.rocket) {
             splitLines(
                 context, 
-                `Rockets: shoot rockets \nthat explode on impact\nCost: ${this.buttons[1].upgradeCost}g`, 
+                `Rockets: shoot rockets\nthat explode on impact\nCost: ${this.buttons[1].upgradeCost}g`, 
                 this.x + this.gap, 
                 this.y + this.gap * 5 + textHeight, 
                 20
@@ -86,6 +205,97 @@ export default class UpgradeMenu {
                 this.y + this.gap * 5 + textHeight, 
                 20
             );
+        } else if (!this.game.player.upgrades.reducedRocketCooldown) {
+            splitLines(
+                context, 
+                `Rocket Cooldown: reduce\ncooldown of rockets\nCost: ${this.buttons[2].upgradeCost}g`, 
+                this.x + this.gap, 
+                this.y + this.gap * 5 + textHeight, 
+                20
+            );
+        }
+
+        // rapid fire upgrade
+        if (!this.game.player.upgrades.rapidFire) {
+            splitLines(
+                context, 
+                `Rapid Fire: increase\nrate of fire\nCost: ${this.buttons[3].upgradeCost}g`, 
+                this.x + this.gap, 
+                this.y + this.gap * 10 + textHeight, 
+                20
+            );
+        } else if (!this.game.player.upgrades.rapidFire_2) {
+            splitLines(
+                context, 
+                `Rapid Fire II: further\nincrease rate of fire\nCost: ${this.buttons[9].upgradeCost}g`, 
+                this.x + this.gap, 
+                this.y + this.gap * 10 + textHeight, 
+                20
+            );
+        }
+
+        // improved jets upgrade
+        if (!this.game.player.upgrades.improvedJets) {
+            splitLines(
+                context, 
+                `Improved Jets: upgrade\njets for faster flight\nCost: ${this.buttons[4].upgradeCost}g`, 
+                this.x + this.gap, 
+                this.y + this.gap * 15 + textHeight, 
+                20
+            );
+        }
+
+        // dual shot
+        if (!this.game.player.upgrades.dualShot) {
+            splitLines(
+                context, 
+                `Dual Shot: fire two\nlasers at once\nCost: ${this.buttons[5].upgradeCost}g`, 
+                this.x + this.gap, 
+                this.y + this.gap * 20 + textHeight, 
+                20
+            );
+        }
+
+        // strongLasers
+        if (!this.game.player.upgrades.strongLasers) {
+            splitLines(
+                context, 
+                `Strong Lasers: increase\nlaser damage\nCost: ${this.buttons[6].upgradeCost}g`, 
+                this.x + this.gap, 
+                this.y + this.gap * 25 + textHeight, 
+                20
+            );
+        }
+
+        // increased lives 1
+        if (!this.game.player.upgrades.increasedLives) {
+            splitLines(
+                context, 
+                `Extra Lives: gain 1 max\nhealth\nCost: ${this.buttons[7].upgradeCost}g`, 
+                this.x + this.gap, 
+                this.y + this.gap * 30 + textHeight, 
+                20
+            );
+        // increased lives 2
+        } else if (!this.game.player.upgrades.increasedLives_2) {
+            splitLines(
+                context, 
+                `Extra Lives II: gain 2\nmax health\nCost: ${this.buttons[8].upgradeCost}g`, 
+                this.x + this.gap, 
+                this.y + this.gap * 30 + textHeight, 
+                20
+            );
+        }
+
+        // shield
+        if (!this.game.player.upgrades.shield) {
+            splitLines(
+                context, 
+                `Shield: start each round\nwith a damage absorbing\nshield\nCost: ${this.buttons[7].upgradeCost}g`, 
+                this.x + this.gap, 
+                this.y + this.gap * 35 + textHeight, 
+                20
+            );
         }
 
         // draw buttons
@@ -93,8 +303,7 @@ export default class UpgradeMenu {
             if (button.name === 'nextWaveButton') {
                 button.button.draw(context);
             } else if (!this.game.player.upgrades[button.name]) {
-                if (button.name === 'rocketDamage' && !this.game.player.upgrades.rocket) return;
-                button.button.draw(context);
+                if (button.isEnabled) button.button.draw(context);
             }
         });
         
@@ -104,10 +313,14 @@ export default class UpgradeMenu {
     handleButtonClick() {
         // if menu is showing let player click buttons
         if (this.isShowing) {
+            let buttonName = '';
             this.buttons.forEach(button => {
                 // next wave button
                 if (button.name === 'nextWaveButton') {
                     if (this.game.checkCollision(this.game.mouse, button.button)) {
+                        if (this.game.player.upgrades.shield) {
+                            this.game.player.resetShield();
+                        }
                         this.isShowing = false;
                         this.game.newWave();
                         this.game.waveCount++;
@@ -116,15 +329,33 @@ export default class UpgradeMenu {
                 // purchase upgrade buttons
                 } else if (this.game.checkCollision(this.game.mouse, button.button)) {
                     if (
+                        button.isEnabled &&
                         button.upgradeCost &&  
-                        button.upgradeCost <= this.game.gold &&
-                        !this.game.player.upgrades[button.name]
+                        button.upgradeCost <= this.game.gold
                     ) {
+                        buttonName = button.name;
+                        button.isEnabled = false;
                         this.game.gold -= button.upgradeCost;
                         this.game.player.upgrades[button.name] = true;
                     }
                 }
             });
+
+            // check if other buttons need to be enabled
+            switch (buttonName) {
+                case 'rocket':
+                    this.buttons[2].isEnabled = true;
+                    break;
+                case 'rocketDamage':
+                    this.buttons[11].isEnabled = true;
+                    break;
+                case 'rapidFire':
+                    this.buttons[10].isEnabled = true;
+                    break;
+                case 'increasedLives':
+                    this.buttons[8].isEnabled = true;
+                    break;
+            }
         }
     }
 }

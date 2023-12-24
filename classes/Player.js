@@ -1,4 +1,5 @@
-import { Rocket, EnemyProjectile } from './Projectile.js';
+import { EnemyProjectile } from './Projectile.js';
+import Shield from './Shield.js';
 
 export default class Player {
     constructor(game) {
@@ -41,58 +42,84 @@ export default class Player {
             this.width,
             this.height
         );
+
+        //draw shield
+        if (this.shield) {
+            this.shield.draw(context);
+        }
     }
 
     update() {
+        // check for max lives upgrades
+        if (this.upgrades.increasedLives) this.maxLives = 4;
+        if (this.upgrades.increasedLives_2) this.maxLives = 6;
+
+        // shield upgrade
+        if (this.shield) this.shield.update();
+
+        // speed upgrade
+        if (this.upgrades.improvedJets) {
+            this.speed = 15;
+            this.animationStartFrame = 9;
+            this.jetsFrameX = this.animationStartFrame;
+            this.animationMaxFrame = this.animationStartFrame + 4;
+        }
+
         // horizontal movement
         if (this.game.keys.indexOf('a') > -1) {
             this.x -= this.speed;
             this.frameX = 0;
             this.xOffset = 8;
+            if (this.shield) this.shield.x -= this.speed;
         } else if (this.game.keys.indexOf('d') > -1) {
             this.x += this.speed;
             this.frameX = 2;
             this.xOffset = -8;
+            if (this.shield) this.shield.x += this.speed;
         } else {
             this.frameX = 1;
             this.xOffset = 0;
         }
 
         // rocket cooldown
-        if (this.rocketOnCooldown) this.rocketCooldownTimer++;
+        if (this.rocketOnCooldown)
+            this.upgrades.reducedRocketCooldown ? this.rocketCooldownTimer++ 
+            : this.rocketCooldownTimer += 0.5;
 
         this.rocketOnCooldown = this.rocketCooldownTimer < this.rocketCooldown;
 
         // shooting
         if (this.game.keys.indexOf(' ') > -1 && this.canFire) this.shoot();
+
         // fire rocket
         if (this.game.keys.indexOf('e') > -1 && this.upgrades.rocket && !this.rocketOnCooldown) {
-            const rocket = new Rocket(
-                this.game, 
-                this.jetsImage, 
-                this.jetsFrameX, 
-                this.animationDelay,
-                this.animationTimer,
-                this.animationStartFrame,
-                this.maxAnimationFrame
-            );
-            this.game.projectilesPool.push(rocket);
-            rocket.start(this.x + this.width / 2 - this.xOffset, this.y);
+            const rocket = this.game.getProjectile('rocket');
+            if (rocket) {
+                rocket.start(this.x + this.width / 2 - this.xOffset, this.y);
+            }
             this.rocketOnCooldown = true;
             this.rocketCooldownTimer = 0;
         }
 
         // horizontal boundaries
-        if (this.x < -this.width / 2) this.x = -this.width / 2;
-        else if (this.x > this.game.width - this.width / 2) 
+        if (this.x < -this.width / 2) {
+            this.x = -this.width / 2;
+            if (this.shield) this.shield.x = -this.shield.width / 2;
+        } else if (this.x > this.game.width - this.width / 2) {
             this.x = this.game.width - this.width / 2;
-        
+            if (this.shield) this.shield.x = this.game.width - this.shield.width / 2;
+        } 
+   
+        // rapid fire upgrade
+        if (this.upgrades.rapidFire_2) this.attackInterval = 10;
+        else if (this.upgrades.rapidFire) this.attackInterval = 15;
+
         // attack interval for shooting
         if (this.attackTimer > this.attackInterval) {
             this.canFire = true;
         } else {
             this.canFire = false;
-            this.attackTimer += 0.5;
+            this.attackTimer++;
         }
 
         // jets animation
@@ -138,6 +165,16 @@ export default class Player {
         this.attackTimer = 0;
     }
 
+    resetShield() {
+        this.shield = new Shield(
+            this.game, 
+            this.x - this.width / 2, 
+            this.y - this.height / 2,
+            this.width * 2,
+            this.height * 2 
+        );
+    }
+
     restart() {
         this.width = 8 * this.game.scale;
         this.height = 8 * this.game.scale;
@@ -146,7 +183,7 @@ export default class Player {
         this.speed = 10;
         this.maxLives = 3;
         this.lives = this.maxLives;
-        this.attackInterval = 15;
+        this.attackInterval = 20;
         this.attackTimer = this.attackInterval;
         this.canFire = true;
         this.frameX = 1;
@@ -154,16 +191,19 @@ export default class Player {
         this.upgrades = {
             rocket: false,
             rocketDamage: false,
+            reducedRocketCooldown: false,
             improvedJets: false,
             dualShot: false,
             strongLasers: false,
             shield: false,
             rapidFire: false,
-            increasedLives_1: false,
-            incrasedLives_2: false
+            rapidFire_2: false,
+            increasedLives: false,
+            increasedLives_2: false
         };
         this.rocketCooldown = 100;
         this.rocketCooldownTimer = this.rocketCooldown;
         this.rocketOnCooldown = false;
+        this.shield = null;
     }
 }

@@ -95,6 +95,8 @@ export default class Wave {
             enemy.draw(context);
         });
         this.enemies = this.enemies.filter(enemy => !enemy.markedForDeletion);
+
+        
     }
 
     create() {
