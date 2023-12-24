@@ -5,10 +5,30 @@ export default class UpgradeMenu {
     constructor(game) {
         this.game = game;
         this.width = 400;
-        this.height = 500;
+        this.height = 600;
         this.x = (game.width - this.width) / 2;
-        this.y = (game.height - this.height) / 2;
+        this.y = (game.height - this.height) / 2 + 50;
         this.gap = 10;
+        this.isShowing = false;
+        this.finishedBuying = false;
+        this.nextRoundButton = new Button(
+            this.game, 
+            this.x + this.width - 150 - this.gap, 
+            this.y + this.height - 50 - this.gap, 
+            'NEXT WAVE',
+            150, 
+            50
+        );
+
+        this.game.canvas.addEventListener('click', e => {
+            if (this.game.checkCollision(this.game.mouse, this.nextRoundButton)) {
+                this.isShowing = false;
+                this.game.newWave();
+                this.game.waveCount++;
+                this.game.nextWave.nextWaveTrigger = true;
+            }
+            
+        });
     }
 
     draw(context) {
@@ -48,6 +68,7 @@ export default class UpgradeMenu {
                 buttonHeight
             );
             buyRocketButton.draw(context);
+            this.nextRoundButton.draw(context);
         }
         
         context.restore();

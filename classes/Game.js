@@ -21,6 +21,7 @@ export default class Game {
         this.upgradeMenu = new UpgradeMenu(this);
 
         this.projectilesPool = [];
+        this.enemyProjectilesOnScreen = 0;
         this.numberOfProjectiles = 10;
         this.createProjectiles();
 
@@ -49,23 +50,34 @@ export default class Game {
     }
 
     update() {
-        this.player.update();
+        // only update player and projectiles if menu not showing
+        if (!this.upgradeMenu.isShowing) this.player.update();
+        if (this.upgradeMenu.isShowing) {
+            this.projectilesPool.forEach(projectile => projectile.reset());
+        }
+
+        // projectiles and waves
         this.projectilesPool.forEach(projectile => projectile.update());
         this.waves.forEach(wave => {
-            if (wave.enemies.length < 1 && !wave.nextWaveTrigger && !this.gameOver) {
-                this.newWave();
-                this.waveCount++;
-                wave.nextWaveTrigger = true;
+            if (
+                wave.enemies.length < 1 && 
+                !wave.nextWaveTrigger && 
+                !this.gameOver && 
+                !this.upgradeMenu.isShowing
+            ) {
+                this.upgradeMenu.isShowing = true;
+                this.nextWave = wave;
             }
         });
     }
 
     render(context) {
         this.waves.forEach(wave => wave.render(context));
+        if (!this.upgradeMenu.isShowing) this.player.draw(context);
+
         this.projectilesPool.forEach(projectile => projectile.draw(context));
-        this.player.draw(context);
         this.drawStatusText(context);
-        this.upgradeMenu.draw(context);
+        if (this.upgradeMenu.isShowing) this.upgradeMenu.draw(context);
     }
 
     createProjectiles() {
@@ -83,7 +95,7 @@ export default class Game {
     }
 
     getProjectile(type = 'projectile', amount = 1) {
-        // Find right amount of projectiles to give to player
+        // find right amount of projectiles to give to player
         const projectiles = [];
         for (let i = 0; i < this.projectilesPool.length; i++) {
             if (
@@ -113,9 +125,9 @@ export default class Game {
         context.shadowOffsetY = 2;
         context.shadowColor = 'black';
         context.font = '20px Pixel';
-        context.fillText(`Score: ${this.score}`, 20, 40);
-        context.fillText(`Wave: ${this.waveCount}`, 20, 80);
-        context.fillText(`Gold: ${this.gold}`, 20, 120);
+        context.fillText(`SCORE: ${this.score}`, 20, 40);
+        context.fillText(`WAVE: ${this.waveCount}`, 20, 80);
+        context.fillText(`GOLD: ${this.gold}`, 20, 120);
 
         for (let i = 0; i < this.player.lives; i++) {
             context.fillRect(10 * i + 20, 140, 5, 20);
@@ -124,7 +136,7 @@ export default class Game {
         if (this.gameOver) {
             context.textAlign = 'center';
             context.font = '50px Pixel';
-            context.fillText('Game Over', this.width * 0.5, this.height * 0.5);
+            context.fillText('GAME OVER', this.width * 0.5, this.height * 0.5);
 
             context.font = '20px Pixel';
             context.fillText('Press R to restart!', this.width * 0.5, this.height * 0.5 + 50);
@@ -155,6 +167,7 @@ export default class Game {
         this.waves = [];
         this.waveCount = 1;
         this.waves.push(new Wave(this));
+        this.nextWave = null;
 
         this.score = 0;
         this.gold = 0;

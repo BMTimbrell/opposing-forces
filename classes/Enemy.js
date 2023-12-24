@@ -112,14 +112,17 @@ export class Shooter extends Enemy {
         this.lives = 2;
         this.frameX = 8;
         this.frameY = 2;
-        this.shootChance = 0.002;
+        this.shootChance = 0.01;
     }
 
     update(x, y) {
         super.update(x, y);
-        if (Math.random() < this.shootChance) {
+        if (Math.random() < this.shootChance && this.game.enemyProjectilesOnScreen < 5) {
             const projectile = this.game.getProjectile('enemyProjectile');
-            if (projectile) projectile.start(this.x + this.width / 2, this.y + this.height);
+            if (projectile) {
+                projectile.start(this.x + this.width / 2, this.y + this.height);
+                this.game.enemyProjectilesOnScreen++;
+            }
         }
     }
 }
