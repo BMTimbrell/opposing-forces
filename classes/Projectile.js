@@ -64,7 +64,7 @@ export class Rocket extends Projectile {
 
     ) {
         super(game);
-        this.damage = 1;
+        this.damage = !this.game.player.upgrades.rocketDamage ? 2 : 3;
         this.width = 4 * this.game.scale;
         this.height = 5 * this.game.scale;
         this.frameX = 42;

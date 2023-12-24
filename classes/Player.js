@@ -3,17 +3,7 @@ import { Rocket, EnemyProjectile } from './Projectile.js';
 export default class Player {
     constructor(game) {
         this.game = game;
-        this.width = 8 * this.game.scale;
-        this.height = 8 * this.game.scale;
-        this.x = this.game.width / 2 - this.width / 2;
-        this.y =  this.game.height - this.height - 20;
-        this.speed = 10;
-        this.lives = 3;
-        this.attackInterval = 15;
-        this.attackTimer = this.attackInterval;
-        this.canFire = true;
-        this.frameX = 1;
-        this.frameY = 0;
+        this.restart();
         this.image = document.getElementById('ships');
         this.jetsImage = document.getElementById('animations');
         this.animationStartFrame = 5;
@@ -23,13 +13,6 @@ export default class Player {
         this.animationDelay = 4;
         this.animationTimer = this.animationDelay;
         this.maxAnimationFrame = this.jetsFrameX + 4;
-        this.upgrades = {
-            rocket: false,
-            fastJets: false,
-            dualShot: false,
-            strongLasers: false,
-            shield: false
-        };
     }
 
     draw(context) {
@@ -75,10 +58,15 @@ export default class Player {
             this.xOffset = 0;
         }
 
+        // rocket cooldown
+        if (this.rocketOnCooldown) this.rocketCooldownTimer++;
+
+        this.rocketOnCooldown = this.rocketCooldownTimer < this.rocketCooldown;
+
         // shooting
         if (this.game.keys.indexOf(' ') > -1 && this.canFire) this.shoot();
         // fire rocket
-        if (this.game.keys.indexOf('e') > -1 && this.canFire && this.upgrades.rocket) {
+        if (this.game.keys.indexOf('e') > -1 && this.upgrades.rocket && !this.rocketOnCooldown) {
             const rocket = new Rocket(
                 this.game, 
                 this.jetsImage, 
@@ -90,7 +78,8 @@ export default class Player {
             );
             this.game.projectilesPool.push(rocket);
             rocket.start(this.x + this.width / 2 - this.xOffset, this.y);
-            this.attackTimer = 0;
+            this.rocketOnCooldown = true;
+            this.rocketCooldownTimer = 0;
         }
 
         // horizontal boundaries
@@ -103,7 +92,7 @@ export default class Player {
             this.canFire = true;
         } else {
             this.canFire = false;
-            this.attackTimer++;
+            this.attackTimer += 0.5;
         }
 
         // jets animation
@@ -150,8 +139,31 @@ export default class Player {
     }
 
     restart() {
+        this.width = 8 * this.game.scale;
+        this.height = 8 * this.game.scale;
         this.x = this.game.width / 2 - this.width / 2;
         this.y =  this.game.height - this.height - 20;
-        this.lives = 3;
+        this.speed = 10;
+        this.maxLives = 3;
+        this.lives = this.maxLives;
+        this.attackInterval = 15;
+        this.attackTimer = this.attackInterval;
+        this.canFire = true;
+        this.frameX = 1;
+        this.frameY = 0;
+        this.upgrades = {
+            rocket: false,
+            rocketDamage: false,
+            improvedJets: false,
+            dualShot: false,
+            strongLasers: false,
+            shield: false,
+            rapidFire: false,
+            increasedLives_1: false,
+            incrasedLives_2: false
+        };
+        this.rocketCooldown = 100;
+        this.rocketCooldownTimer = this.rocketCooldown;
+        this.rocketOnCooldown = false;
     }
 }

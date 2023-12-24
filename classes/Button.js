@@ -33,6 +33,7 @@ export default class Button {
     draw(context) {
         context.save();
         context.font = `${this.fontSize} Pixel`;
+        context.lineWidth = 3;
         const metrics = context.measureText(this.text);
         const textWidth = metrics.width;
         const textHeight = metrics.actualBoundingBoxAscent + metrics.actualBoundingBoxDescent;

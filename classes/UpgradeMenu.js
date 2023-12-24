@@ -8,26 +8,46 @@ export default class UpgradeMenu {
         this.height = 600;
         this.x = (game.width - this.width) / 2;
         this.y = (game.height - this.height) / 2 + 50;
-        this.gap = 10;
+        this.gap = 15;
         this.isShowing = false;
-        this.buttons = {
-            nextWaveButton : new Button(
-                this.game, 
-                this.x + this.width - 150 - this.gap, 
-                this.y + this.height - 50 - this.gap, 
-                'NEXT WAVE',
-                150, 
-                50
-            ),
-            rocket : new Button(
-                this.game, 
-                this.x + this.width - 50 - this.gap, 
-                this.y + this.gap * 7, 
-                'BUY',
-                50, 
-                50
-            )
-        }
+        this.buttons = [
+            {
+                button: new Button(
+                    this.game, 
+                    this.x + this.width - 150 - this.gap, 
+                    this.y + this.height - 50 - this.gap, 
+                    'NEXT WAVE',
+                    150, 
+                    50
+                ),
+                name: 'nextWaveButton'
+                    
+            },
+            {
+                button: new Button(
+                    this.game, 
+                    this.x + this.width - 50 - this.gap, 
+                    this.y + this.gap * 5, 
+                    'BUY',
+                    50, 
+                    50
+                ),
+                name: 'rocket',
+                upgradeCost: 30
+            },
+            {
+                button: new Button(
+                    this.game, 
+                    this.x + this.width - 50 - this.gap, 
+                    this.y + this.gap * 5, 
+                    'BUY',
+                    50, 
+                    50
+                ),
+                name: 'rocketDamage',
+                upgradeCost: 50
+            }
+        ]
 
         this.game.canvas.addEventListener('click', this.handleButtonClick.bind(this));
     }
@@ -46,27 +66,37 @@ export default class UpgradeMenu {
         context.fillText('Purchase Upgrades', this.x + (this.width - titleWidth) / 2, this.y + titleHeight + this.gap);
 
         // rocket upgrade
+        context.font = '12px Pixel';
+        metrics = context.measureText('Purchase Upgrades');
+        const textHeight = metrics.actualBoundingBoxAscent + metrics.actualBoundingBoxDescent;
         if (!this.game.player.upgrades.rocket) {
-            context.font = '12px Pixel';
-            metrics = context.measureText('Purchase Upgrades');
-            const textHeight = metrics.actualBoundingBoxAscent + metrics.actualBoundingBoxDescent;
             splitLines(
                 context, 
-                'Rockets: shoot rockets \nthat explode on impact\nCost: 30g', 
+                `Rockets: shoot rockets \nthat explode on impact\nCost: ${this.buttons[1].upgradeCost}g`, 
                 this.x + this.gap, 
-                this.y + this.gap * 7 + textHeight, 
+                this.y + this.gap * 5 + textHeight, 
+                20
+            );
+        // rocket damage upgrade
+        } else if (!this.game.player.upgrades.rocketDamage) {
+            splitLines(
+                context, 
+                `Rocket Damage: increase\ndamage of rockets\nCost: ${this.buttons[2].upgradeCost}g`, 
+                this.x + this.gap, 
+                this.y + this.gap * 5 + textHeight, 
                 20
             );
         }
 
         // draw buttons
-        for (const button in this.buttons) {
-            if (button === 'nextWaveButton') {
-                this.buttons[button].draw(context);
-            } else if (!this.game.player.upgrades[button]) {
-                this.buttons[button].draw(context);
+        this.buttons.forEach(button => {
+            if (button.name === 'nextWaveButton') {
+                button.button.draw(context);
+            } else if (!this.game.player.upgrades[button.name]) {
+                if (button.name === 'rocketDamage' && !this.game.player.upgrades.rocket) return;
+                button.button.draw(context);
             }
-        }
+        });
         
         context.restore();
     }
@@ -74,35 +104,27 @@ export default class UpgradeMenu {
     handleButtonClick() {
         // if menu is showing let player click buttons
         if (this.isShowing) {
-            for (const button in this.buttons) {
+            this.buttons.forEach(button => {
                 // next wave button
-                if (button === 'nextWaveButton') {
-                    if (this.game.checkCollision(this.game.mouse, this.buttons[button])) {
+                if (button.name === 'nextWaveButton') {
+                    if (this.game.checkCollision(this.game.mouse, button.button)) {
                         this.isShowing = false;
                         this.game.newWave();
                         this.game.waveCount++;
                         this.game.nextWave.nextWaveTrigger = true;
                     }
-                } else if (this.game.checkCollision(this.game.mouse, this.buttons[button])) {
-                    let upgradeCost = 0;
-                    switch (button) {
-                        case 'rocket':
-                            upgradeCost = 30;
-                            break;
-                        default:
-                            upgradeCost = 0;    
-                    }
-
+                // purchase upgrade buttons
+                } else if (this.game.checkCollision(this.game.mouse, button.button)) {
                     if (
-                        upgradeCost &&  
-                        upgradeCost <= this.game.gold &&
-                        !this.game.player.upgrades[button]
+                        button.upgradeCost &&  
+                        button.upgradeCost <= this.game.gold &&
+                        !this.game.player.upgrades[button.name]
                     ) {
-                        this.game.gold -= upgradeCost;
-                        this.game.player.upgrades[button] = true;
+                        this.game.gold -= button.upgradeCost;
+                        this.game.player.upgrades[button.name] = true;
                     }
                 }
-            }
+            });
         }
     }
 }

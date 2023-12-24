@@ -67,8 +67,11 @@ export default class Game {
                 !this.gameOver && 
                 !this.upgradeMenu.isShowing
             ) {
+                this.player.rocketCooldownTimer = this.player.rocketCooldown;
+                this.player.rocketOnCooldown = false;
                 this.upgradeMenu.isShowing = true;
                 this.nextWave = wave;
+                if (this.player.lives < this.player.maxLives) this.player.lives++;
             }
         });
     }
@@ -123,6 +126,7 @@ export default class Game {
     }
 
     drawStatusText(context) {
+        // game score, wave number, gold
         context.save();
         context.shadowOffsetX = 2;
         context.shadowOffsetY = 2;
@@ -132,17 +136,33 @@ export default class Game {
         context.fillText(`WAVE: ${this.waveCount}`, 20, 80);
         context.fillText(`GOLD: ${this.gold}`, 20, 120);
 
-        for (let i = 0; i < this.player.lives; i++) {
-            context.fillRect(10 * i + 20, 140, 5, 20);
+        // player lives
+        for (let i = 0; i < this.player.maxLives; i++) {
+            context.strokeRect(20 + 20 * i, 140, 10, 15);
         }
 
+        for (let i = 0; i < this.player.lives; i++) {
+            context.fillRect(20 + 20 * i, 140, 10, 15);
+        }
+
+        // rocket cooldown
+        for (let i = 0; i < this.player.rocketCooldown; i++) {
+            context.strokeRect(20, 180, 200, 15);
+        }
+        context.save();
+        if (this.player.rocketOnCooldown) context.fillStyle = 'red';
+        for (let i = 0; i < this.player.rocketCooldownTimer; i++) {
+            context.fillRect(20 + 2 * i, 180, 2, 15);
+        }
+        context.restore();
+        // game over
         if (this.gameOver) {
             context.textAlign = 'center';
             context.font = '50px Pixel';
             context.fillText('GAME OVER', this.width * 0.5, this.height * 0.5);
 
             context.font = '20px Pixel';
-            context.fillText('Press R to restart!', this.width * 0.5, this.height * 0.5 + 50);
+            context.fillText('Press R to Restart!', this.width * 0.5, this.height * 0.5 + 50);
         }
         context.restore();
     }
@@ -156,8 +176,9 @@ export default class Game {
         } else if (this.rows * this.enemySize < this.height * 0.7) {
             this.rows++;
         }
-        
-        this.waves.push(new Wave(this));
+        const wave = new Wave(this);
+        this.waves.push(wave);
+        this.waves.filter(w => w === wave);
     }
 
     restart() {
@@ -175,5 +196,9 @@ export default class Game {
         this.score = 0;
         this.gold = 0;
         this.gameOver = false;
+
+        this.projectilesPool.forEach(projectile => {
+            if (!projectile.free) projectile.reset();
+        });
     }
 }
