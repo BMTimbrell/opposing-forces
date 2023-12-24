@@ -44,9 +44,11 @@ export default class Projectile {
     }
 
     reset() {
-        this.free = true;
-        if (this instanceof EnemyProjectile)
+        if (this instanceof EnemyProjectile) {
             this.game.enemyProjectilesOnScreen--;
+            console.log(this);
+        }
+        this.free = true;
     }
 }
 

@@ -53,7 +53,9 @@ export default class Game {
         // only update player and projectiles if menu not showing
         if (!this.upgradeMenu.isShowing) this.player.update();
         if (this.upgradeMenu.isShowing) {
-            this.projectilesPool.forEach(projectile => projectile.reset());
+            this.projectilesPool.forEach(projectile => {
+                if (!projectile.free) projectile.reset();
+            });
         }
 
         // projectiles and waves
@@ -77,6 +79,7 @@ export default class Game {
 
         this.projectilesPool.forEach(projectile => projectile.draw(context));
         this.drawStatusText(context);
+
         if (this.upgradeMenu.isShowing) this.upgradeMenu.draw(context);
     }
 
