@@ -142,7 +142,6 @@ export class Rocket extends Projectile {
             }
             
             if (this.canDamage) {
-                console.log(this.game.waves);
                 this.game.waves[0].enemies.forEach(enemy => {
                     if (this.game.checkCollision(this, enemy)) {
                         enemy.hit(this.damage);
@@ -224,5 +223,30 @@ export class EnemyProjectile extends Projectile {
             );
         }
         context.restore();
+    }
+}
+
+export class BossProjectile_1 extends EnemyProjectile {
+    constructor(game) {
+        super(game);
+        this.damage = 2;
+        this.type = 'bossProjectile_1';
+        this.frameX = 25;
+        this.frameY = 9;
+        this.width = 6 * this.game.scale;
+        this.height = 6 * this.game.scale;
+    }
+}
+
+export class BossProjectile_2 extends EnemyProjectile {
+    constructor(game) {
+        super(game);
+        this.damage = 2;
+        this.type = 'bossProjectile_2';
+        this.frameX = 2;
+        this.frameY = 9;
+        this.width = 3 * this.game.scale;
+        this.height = 6 * this.game.scale;
+        this.speed = 7;
     }
 }

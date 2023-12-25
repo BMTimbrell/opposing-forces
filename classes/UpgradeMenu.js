@@ -175,8 +175,8 @@ export default class UpgradeMenu {
                         
                         // hide menu and start next wave
                         this.isShowing = false;
-                        this.game.newWave();
                         this.game.waveCount++;
+                        this.game.newWave();
                         this.game.nextWave.nextWaveTrigger = true;
                     }
                 // purchase upgrade buttons

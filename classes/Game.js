@@ -1,5 +1,5 @@
 import Player from './Player.js';
-import Projectile, { EnemyProjectile, StrongLaser, Rocket } from './Projectile.js';
+import Projectile, { EnemyProjectile, StrongLaser, Rocket, BossProjectile_1, BossProjectile_2 } from './Projectile.js';
 import Wave from './Wave.js';
 import UpgradeMenu from './UpgradeMenu.js';
 
@@ -21,10 +21,10 @@ export default class Game {
         this.upgradeMenu = new UpgradeMenu(this);
 
         this.projectilesPool = [];
-        this.enemyProjectilesOnScreen = 0;
         this.numberOfProjectiles = 20;
         this.createProjectiles();
 
+        this.bossWaves = [5, 10, 15];
         this.restart();
 
         window.addEventListener('keydown', e => {
@@ -94,6 +94,8 @@ export default class Game {
 
         for (let i = 0; i < 10; i++) {
             this.projectilesPool.push(new EnemyProjectile(this));
+            this.projectilesPool.push(new BossProjectile_1(this));
+            this.projectilesPool.push(new BossProjectile_2(this));
         }
 
         this.projectilesPool.push(new Rocket(this));
@@ -164,16 +166,28 @@ export default class Game {
         context.restore();
     }
 
+    // create new wave
     newWave() {
         if (
             Math.random() < 0.5 && 
-            this.columns * this.enemySize < this.width * 0.6 &&
-            this.waveCount !== 2
+            this.columns * this.enemySize < this.width * 0.7 &&
+            !this.bossWaves.some(wave => wave === this.waveCount)
         ) {
             this.columns++;
-        } else if (this.rows * this.enemySize < this.height * 0.7) {
+        } else if (
+            this.rows * this.enemySize < this.height * 0.5 &&
+            !this.bossWaves.some(wave => wave === this.waveCount)
+        ) {
             this.rows++;
         }
+
+        // stop there being too many enemies early on
+        if (this.waveCount < 10 && this.columns * this.enemySize > this.width * 0.5) {
+            this.columns--;
+            if (this.rows * this.enemySize < this.height * 0.5)
+                this.rows++;
+        }
+
         const wave = new Wave(this);
         this.waves.push(wave);
         this.waves = this.waves.filter(w => w === wave);
@@ -199,5 +213,6 @@ export default class Game {
         this.projectilesPool.forEach(projectile => {
             if (!projectile.free) projectile.reset();
         });
+        this.enemyProjectilesOnScreen = 0;
     }
 }

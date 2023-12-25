@@ -8,7 +8,6 @@ export default class Player {
         this.image = document.getElementById('ships');
         this.jetsImage = document.getElementById('animations');
         this.xOffset = 0;
-        this.animationDelay = 4;
         this.animationTimer = this.animationDelay;
     }
 
@@ -197,5 +196,6 @@ export default class Player {
         this.jetsFrameX = this.animationStartFrame;
         this.jetsFrameY = 1;
         this.maxAnimationFrame = this.jetsFrameX + 4;
+        this.animationDelay = 4;
     }
 }

@@ -20,6 +20,7 @@ export default class Enemy {
         this.maxAnimationFrame = this.animationFrameX + 3;
         this.maxLives = 1;
         this.lives = this.maxLives;
+        this.goldDropped = 10;
     }
     
     draw(context) {
@@ -62,19 +63,19 @@ export default class Enemy {
         
         // enemy dies
         if (this.lives < 1) {
-            if (this instanceof Boss_1) {
+            if (this instanceof Boss) {
                 this.game.waves[0].speedX = 0;
             }
 
             // death animation
             this.image = document.getElementById(
-                !(this instanceof Boss_1) ? 'animations' : 'explosion'
+                !(this instanceof Boss) ? 'animations' : 'explosion'
             );
             this.frameX = this.animationFrameX
             this.frameY = this.animationFrameY;
             this.animationTimer--;
             if (this.animationTimer === 0) {
-                this.animationFrameX += !(this instanceof Boss_1) ? 1 : 2;
+                this.animationFrameX += !(this instanceof Boss) ? 1 : 2;
                 this.animationTimer = this.animationDelay;
             }
             if (this.animationFrameX > this.maxAnimationFrame) { 
@@ -84,13 +85,13 @@ export default class Enemy {
             // reward player gold and score
             if (!this.game.gameOver && this.markedForDeletion) {
                 this.game.score += this.maxLives;
-                this.game.gold += this.maxLives * 10;
+                this.game.gold += this.goldDropped;
             }
         }
 
         // check collision with player
         if (this.game.checkCollision(this, this.game.player) && this.lives > 0) {
-            if (!(this instanceof Boss_1)) {
+            if (!(this instanceof Boss)) {
                 this.lives = 0;
                 this.game.player.lives--;
             } else {
@@ -105,7 +106,7 @@ export default class Enemy {
             this.lives > 0
         ) {
             this.game.player.shield.fading = true;
-            if (!(this instanceof Boss_1)) this.lives = 0;
+            if (!(this instanceof Boss)) this.lives = 0;
         }
 
         // lose condition
@@ -125,6 +126,7 @@ export class ArmouredEnemy extends Enemy {
         this.lives = 2;
         this.frameX = 7;
         this.frameY = 2;
+        this.goldDropped = 15;
     }
 }
 
@@ -134,12 +136,19 @@ export class Shooter extends Enemy {
         this.lives = 2;
         this.frameX = 8;
         this.frameY = 2;
+        this.goldDropped = 20;
         this.shootChance = 0.01;
+        this.lastShot = 0;
     }
 
     update(x, y) {
         super.update(x, y);
-        if (Math.random() < this.shootChance && this.game.enemyProjectilesOnScreen < 5) {
+        this.lastShot++;
+        if (
+            Math.random() < this.shootChance && 
+            this.game.enemyProjectilesOnScreen < 5 &&
+            this.lastShot > 20
+        ) {
             const projectile = this.game.getProjectile('enemyProjectile');
             if (projectile) {
                 projectile.start(this.x + this.width / 2, this.y + this.height);
@@ -155,18 +164,91 @@ export class ArmouredShooter extends Shooter {
         this.lives = 3;
         this.frameX = 4;
         this.frameY = 4;
+        this.goldDropped = 25;
     }
 }
 
-export class Boss_1 extends Enemy {
+export class Boss extends Enemy {
+    constructor(game, positionX, positionY) {
+        super(game, positionX, positionY);
+        this.width = this.game.enemySize * 2;
+        this.height = this.game.enemySize * 2;
+        this.animationFrameX = 0;
+        this.animationFrameY = 0;
+        this.lastShot = 0;
+    }
+
+    update(x, y) {
+        super.update(x, y);
+        this.lastShot++;
+    }
+}
+
+export class Boss_1 extends Boss {
     constructor(game, positionX, positionY) {
         super(game, positionX, positionY);
         this.lives = 20;
-        this.width = this.game.enemySize * 2;
-        this.height = this.game.enemySize * 2;
         this.frameX = 4;
         this.frameY = 6;
-        this.animationFrameX = 0;
-        this.animationFrameY = 0;
+        this.shootChance = 0.015;
+        this.yOffset = 60;
+        this.goldDropped = 100;
+    }
+
+    update(x, y) {
+        super.update(x, y);
+        if (
+            Math.random() < this.shootChance && 
+            this.game.enemyProjectilesOnScreen < 4 && 
+            this.lastShot > 20
+        ) {
+            this.lastShot = 0;
+            const projectiles = this.game.getProjectile('bossProjectile_1', 2);
+            const projectile_1 = projectiles[0];
+            const projectile_2 = projectiles[1];
+            if (projectile_1 && projectile_2) {
+                projectile_1.start(this.x + projectile_1.width / 2, this.y + this.height - this.yOffset);
+                projectile_2.start(this.x + this.width - projectile_2.width / 2, this.y + this.height - this.yOffset);
+                this.game.enemyProjectilesOnScreen += 2;
+            }
+        }
+    }
+}
+
+export class Boss_2 extends Boss {
+    constructor(game, positionX, positionY) {
+        super(game, positionX, positionY);
+        this.lives = 40;
+        this.frameX = 6;
+        this.frameY = 6;
+        this.shootChance = 0.02;
+        this.xOffset = 10;
+        this.yOffset = 20;
+        this.goldDropped = 200;
+    }
+
+    update(x, y) {
+        super.update(x, y);
+        if (
+            Math.random() < this.shootChance && 
+            this.game.enemyProjectilesOnScreen < 4 && 
+            this.lastShot > 20
+        ) {
+            this.lastShot = 0;
+            const projectiles = this.game.getProjectile('bossProjectile_2', 2);
+            const projectile_1 = projectiles[0];
+            const projectile_2 = projectiles[1];
+            if (projectile_1 && projectile_2) {
+                projectile_1.start(
+                    this.x + projectile_1.width / 2 + this.xOffset, 
+                    this.y + this.height - this.yOffset
+                );
+                projectile_2.start(
+                    this.x + this.width - projectile_2.width / 2 - this.xOffset, 
+                    this.y + this.height - this.yOffset
+                );
+                this.game.enemyProjectilesOnScreen += 2;
+            }
+        }
     }
 }

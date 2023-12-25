@@ -1,4 +1,4 @@
-import Enemy, { ArmouredEnemy, Shooter, ArmouredShooter, Boss_1 } from './Enemy.js';
+import Enemy, { ArmouredEnemy, Shooter, ArmouredShooter, Boss_1, Boss_2 } from './Enemy.js';
 
 export default class Wave {
     constructor(game) {
@@ -12,69 +12,6 @@ export default class Wave {
         this.speedY = 0;
         this.enemies = [];
         this.nextWaveTrigger = false;
-        this.armouredEnemyChance = () => {
-            let chance = 0;
-            switch (this.game.waveCount) {
-                case 1:
-                    chance = 0;
-                    break;
-                case 2: 
-                    chance = 0.2;
-                    break;
-                case 3: 
-                    chance = 0.3;
-                    break;
-                case 4:
-                    chance = 0.4;
-                default:
-                    chance = 0.5;
-            }
-
-            return chance;
-        };
-
-        this.shooterChance = () => {
-            let chance = 0;
-            switch (this.game.waveCount) {
-                case 1:
-                    chance = 0;
-                    break;
-                case 2: 
-                    chance = 0;
-                    break;
-                case 3: 
-                    chance = 0.1;
-                    break;
-                case 4:
-                    chance = 0.2;
-                default:
-                    chance = 0.5;
-            }
-
-            return chance;
-        };
-
-        this.armouredShooterChance = () => {
-            let chance = 0;
-            switch (this.game.waveCount) {
-                case 1:
-                    chance = 0;
-                    break;
-                case 2: 
-                    chance = 0;
-                    break;
-                case 3: 
-                    chance = 0.1;
-                    break;
-                case 4:
-                    chance = 0.2;
-                default:
-                    chance = 0.5;
-            }
-
-            return chance;
-        }
-
         this.create();
     }
 
@@ -86,7 +23,8 @@ export default class Wave {
             this.checkRightMostEnemy() > this.game.width
         ) {
             this.speedX *= -1;
-            if (this.game.waveCount === 3) this.speedY = this.game.enemySize * 2;
+            if (this.game.bossWaves.some(wave => wave === this.game.waveCount)) 
+                this.speedY = this.game.enemySize * 2;
             else this.speedY = this.game.enemySize;
         }
 
@@ -104,7 +42,11 @@ export default class Wave {
     }
 
     create() {
-        if (this.game.waveCount === 2) {
+        if (this.game.bossWaves.some(wave => wave === this.game.waveCount)) {
+            if (this.game.waveCount === 10) {
+                this.enemies.push(new Boss_2(this.game, 0, 0));
+                return;
+            }
             this.enemies.push(new Boss_1(this.game, 0, 0));
             return;
         }
@@ -114,9 +56,9 @@ export default class Wave {
                 const enemyY = y * this.game.enemySize;
 
                 const enemyType = (
-                    Math.random() < this.armouredShooterChance() ? ArmouredShooter : 
-                    Math.random() < this.shooterChance() ? Shooter : 
-                    Math.random() < this.armouredEnemyChance() ? ArmouredEnemy : Enemy
+                    Math.random() < this.calculateEnemyChance(ArmouredShooter) ? ArmouredShooter : 
+                    Math.random() < this.calculateEnemyChance(Shooter) ? Shooter : 
+                    Math.random() < this.calculateEnemyChance(ArmouredEnemy) ? ArmouredEnemy : Enemy
                 );
                 this.enemies.push(new enemyType(this.game, enemyX, enemyY));
             }
@@ -147,5 +89,79 @@ export default class Wave {
             }
         }
         return x;
+    }
+
+    calculateEnemyChance(type) {
+        let chance = 0;
+            switch (this.game.waveCount) {
+                case 1:
+                    chance = 0;
+                    break;
+                case 2: 
+                    chance = (
+                        type === ArmouredEnemy ? 0.2 :
+                        type === Shooter ? 0 :
+                        type === ArmouredShooter ? 0 :
+                        0
+                    );
+                    break;
+                case 3: 
+                    chance = (
+                        type === ArmouredEnemy ? 0.3 :
+                        type === Shooter ? 0.1 :
+                        type === ArmouredShooter ? 0 :
+                        0
+                    );
+                    break;
+                case 4:
+                    chance = (
+                        type === ArmouredEnemy ? 0.4 :
+                        type === Shooter ? 0.2 :
+                        type === ArmouredShooter ? 0.1 :
+                        0
+                    );
+                    break;
+                case 6:
+                    chance = (
+                        type === ArmouredEnemy ? 0.5 :
+                        type === Shooter ? 0.3 :
+                        type === ArmouredShooter ? 0.2 :
+                        0
+                    );
+                    break;
+                case 7:
+                    chance = (
+                        type === ArmouredEnemy ? 0.5 :
+                        type === Shooter ? 0.4 :
+                        type === ArmouredShooter ? 0.3 :
+                        0
+                    );
+                    break;
+                case 8:
+                    chance = (
+                        type === ArmouredEnemy ? 0.5 :
+                        type === Shooter ? 0.5 :
+                        type === ArmouredShooter ? 0.4 :
+                        0
+                    );
+                    break;
+                case 9:
+                    chance = (
+                        type === ArmouredEnemy ? 0.5 :
+                        type === Shooter ? 0.5 :
+                        type === ArmouredShooter ? 0.5 :
+                        0
+                    );
+                    break;
+                default:
+                    chance = (
+                        type === ArmouredEnemy ? 0.5 :
+                        type === Shooter ? 0.5 :
+                        type === ArmouredShooter ? 0.5 :
+                        0
+                    );
+            }
+
+            return chance;
     }
 }
