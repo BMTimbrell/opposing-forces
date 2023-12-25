@@ -140,7 +140,16 @@ export class Rocket extends Projectile {
                     this.reset();
                 }
             }
-            if (this.explosionTimer < this.animationDelay - 1) this.canDamage = false;
+            
+            if (this.canDamage) {
+                console.log(this.game.waves);
+                this.game.waves[0].enemies.forEach(enemy => {
+                    if (this.game.checkCollision(this, enemy)) {
+                        enemy.hit(this.damage);
+                    }
+                });
+                this.canDamage = false;
+            }
         }
     }
 

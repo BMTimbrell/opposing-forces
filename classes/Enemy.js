@@ -50,8 +50,9 @@ export default class Enemy {
                     this.game.checkCollision(projectile, this)
                 ) {
                     if (projectile instanceof Rocket) {
-                        if (projectile.canDamage) this.hit(projectile.damage);
-                        if (!projectile.isBoomTime) projectile.explode();
+                        if (!projectile.canDamage && !projectile.isBoomTime) {
+                            projectile.explode();
+                        }
                     } else {
                         this.hit(projectile.damage);
                         projectile.reset();

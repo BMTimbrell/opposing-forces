@@ -175,7 +175,7 @@ export default class Game {
         }
         const wave = new Wave(this);
         this.waves.push(wave);
-        this.waves.filter(w => w === wave);
+        this.waves = this.waves.filter(w => w === wave);
     }
 
     restart() {
