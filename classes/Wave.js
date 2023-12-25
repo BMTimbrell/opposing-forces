@@ -80,8 +80,11 @@ export default class Wave {
 
     render(context) {
         if (this.y < 0) this.y += 5;
-        
-        if (this.x < 0 || this.x > this.game.width - this.width) {
+
+        if (
+            this.checkLeftMostEnemy() < 0 || 
+            this.checkRightMostEnemy() + this.game.enemySize > this.game.width
+        ) {
             this.speedX *= -1;
             this.speedY = this.game.enemySize;
         }
@@ -113,5 +116,31 @@ export default class Wave {
                 this.enemies.push(new enemyType(this.game, enemyX, enemyY));
             }
         }
+    }
+
+    checkLeftMostEnemy() {
+        let x = this.game.width;
+        for (let i = 0; i < this.enemies.length; i++) {
+            if (this.enemies[i].x === this.x) {
+                x = this.x;
+                break;
+            } else if (this.enemies[i].x < x) {
+                x = this.enemies[i].x;
+            }
+        }
+        return x;
+    }
+
+    checkRightMostEnemy() {
+        let x = 0;
+        for (let i = 0; i < this.enemies.length; i++) {
+            if (this.enemies[i].x === this.x + this.width - this.game.enemySize) {
+                x = this.enemies[i].x;
+                break;
+            } else if (this.enemies[i].x > x) {
+                x = this.enemies[i].x;
+            }
+        }
+        return x;
     }
 }

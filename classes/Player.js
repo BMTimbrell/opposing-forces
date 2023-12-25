@@ -189,7 +189,7 @@ export default class Player {
         this.frameX = 1;
         this.frameY = 0;
         this.upgrades = {
-            rocket: true,
+            rocket: false,
             rocketDamage: false,
             reducedRocketCooldown: false,
             improvedJets: false,
