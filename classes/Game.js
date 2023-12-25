@@ -147,13 +147,23 @@ export default class Game {
         }
 
         // rocket cooldown
-        context.strokeRect(20, 180, 200, 15);
-        context.save();
-        if (this.player.rocketOnCooldown) context.fillStyle = 'red';
-        for (let i = 0; i < this.player.rocketCooldownTimer; i++) {
-            context.fillRect(20 + 2 * i, 180, 2, 15);
+        if (this.player.upgrades.rocket) {
+            context.strokeRect(20, 180, 200, 15);
+            context.save();
+            if (this.player.rocketOnCooldown) context.fillStyle = 'red';
+            for (let i = 0; i < this.player.rocketCooldownTimer; i++) {
+                context.fillRect(20 + 2 * i, 180, 2, 15);
+            }
+            context.restore();
+            context.save();
+            context.shadowOffsetX = 0;
+            context.shadowOffsetY = 0;
+            context.fillStyle = this.player.rocketOnCooldown ? 'white' : 'black';
+            context.font = '14px Pixel';
+            context.fillText('Press E', 70, 195);
+            context.restore();
         }
-        context.restore();
+
         // game over
         if (this.gameOver) {
             context.textAlign = 'center';
@@ -186,7 +196,7 @@ export default class Game {
             this.columns--;
             if (this.rows * this.enemySize < this.height * 0.5)
                 this.rows++;
-        }
+        } else if (this.waveCount === 16) this.rows++;
 
         const wave = new Wave(this);
         this.waves.push(wave);
