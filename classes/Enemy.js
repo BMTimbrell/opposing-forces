@@ -23,11 +23,10 @@ export default class Enemy {
     }
     
     draw(context) {
-        /*context.strokeRect(this.x, this.y, this.width, this.height);*/
         context.drawImage(
             this.image, 
-            this.frameX * this.width / this.game.scale, 
-            this.frameY * this.height / this.game.scale, 
+            this.frameX * this.game.enemySize / this.game.scale, 
+            this.frameY * this.game.enemySize / this.game.scale, 
             this.width / this.game.scale, 
             this.height / this.game.scale,
             this.x,
@@ -63,18 +62,26 @@ export default class Enemy {
         
         // enemy dies
         if (this.lives < 1) {
-            this.image = document.getElementById('animations');
+            if (this instanceof Boss_1) {
+                this.game.waves[0].speedX = 0;
+            }
+
+            // death animation
+            this.image = document.getElementById(
+                !(this instanceof Boss_1) ? 'animations' : 'explosion'
+            );
             this.frameX = this.animationFrameX
             this.frameY = this.animationFrameY;
             this.animationTimer--;
             if (this.animationTimer === 0) {
-                this.animationFrameX++;
+                this.animationFrameX += !(this instanceof Boss_1) ? 1 : 2;
                 this.animationTimer = this.animationDelay;
             }
             if (this.animationFrameX > this.maxAnimationFrame) { 
                 this.markedForDeletion = true;
             }
 
+            // reward player gold and score
             if (!this.game.gameOver && this.markedForDeletion) {
                 this.game.score += this.maxLives;
                 this.game.gold += this.maxLives * 10;
@@ -83,8 +90,12 @@ export default class Enemy {
 
         // check collision with player
         if (this.game.checkCollision(this, this.game.player) && this.lives > 0) {
-            this.lives = 0;
-            this.game.player.lives--;
+            if (!(this instanceof Boss_1)) {
+                this.lives = 0;
+                this.game.player.lives--;
+            } else {
+                if (!this.game.player.shield) this.game.player.lives = 0;
+            }
         }
 
         if (
@@ -93,7 +104,8 @@ export default class Enemy {
             this.game.checkCollision(this, this.game.player.shield) && 
             this.lives > 0
         ) {
-            this.lives = 0;
+            this.game.player.shield.fading = true;
+            if (!(this instanceof Boss_1)) this.lives = 0;
         }
 
         // lose condition
@@ -143,5 +155,18 @@ export class ArmouredShooter extends Shooter {
         this.lives = 3;
         this.frameX = 4;
         this.frameY = 4;
+    }
+}
+
+export class Boss_1 extends Enemy {
+    constructor(game, positionX, positionY) {
+        super(game, positionX, positionY);
+        this.lives = 20;
+        this.width = this.game.enemySize * 2;
+        this.height = this.game.enemySize * 2;
+        this.frameX = 4;
+        this.frameY = 6;
+        this.animationFrameX = 0;
+        this.animationFrameY = 0;
     }
 }

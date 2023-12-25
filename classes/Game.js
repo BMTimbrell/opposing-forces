@@ -167,7 +167,8 @@ export default class Game {
     newWave() {
         if (
             Math.random() < 0.5 && 
-            this.columns * this.enemySize < this.width * 0.6
+            this.columns * this.enemySize < this.width * 0.6 &&
+            this.waveCount !== 2
         ) {
             this.columns++;
         } else if (this.rows * this.enemySize < this.height * 0.7) {
@@ -180,6 +181,7 @@ export default class Game {
 
     restart() {
         this.player.restart();
+        this.upgradeMenu.restart();
 
         this.columns = 2;
         this.rows = 1;

@@ -1,4 +1,4 @@
-import Enemy, { ArmouredEnemy, Shooter, ArmouredShooter } from './Enemy.js';
+import Enemy, { ArmouredEnemy, Shooter, ArmouredShooter, Boss_1 } from './Enemy.js';
 
 export default class Wave {
     constructor(game) {
@@ -83,10 +83,11 @@ export default class Wave {
 
         if (
             this.checkLeftMostEnemy() < 0 || 
-            this.checkRightMostEnemy() + this.game.enemySize > this.game.width
+            this.checkRightMostEnemy() > this.game.width
         ) {
             this.speedX *= -1;
-            this.speedY = this.game.enemySize;
+            if (this.game.waveCount === 3) this.speedY = this.game.enemySize * 2;
+            else this.speedY = this.game.enemySize;
         }
 
         this.x += this.speedX;
@@ -103,6 +104,10 @@ export default class Wave {
     }
 
     create() {
+        if (this.game.waveCount === 2) {
+            this.enemies.push(new Boss_1(this.game, 0, 0));
+            return;
+        }
         for (let y = 0; y < this.game.rows; y++) {
             for (let x = 0; x < this.game.columns; x++) {
                 const enemyX = x * this.game.enemySize;
@@ -134,11 +139,11 @@ export default class Wave {
     checkRightMostEnemy() {
         let x = 0;
         for (let i = 0; i < this.enemies.length; i++) {
-            if (this.enemies[i].x === this.x + this.width - this.game.enemySize) {
-                x = this.enemies[i].x;
+            if (this.enemies[i].x === this.x + this.width - this.enemies[i].width) {
+                x = this.enemies[i].x + this.enemies[i].width;
                 break;
             } else if (this.enemies[i].x > x) {
-                x = this.enemies[i].x;
+                x = this.enemies[i].x + this.enemies[i].width;
             }
         }
         return x;

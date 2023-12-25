@@ -7,13 +7,9 @@ export default class Player {
         this.restart();
         this.image = document.getElementById('ships');
         this.jetsImage = document.getElementById('animations');
-        this.animationStartFrame = 5;
         this.xOffset = 0;
-        this.jetsFrameX = this.animationStartFrame;
-        this.jetsFrameY = 8;
         this.animationDelay = 4;
         this.animationTimer = this.animationDelay;
-        this.maxAnimationFrame = this.jetsFrameX + 4;
     }
 
     draw(context) {
@@ -34,7 +30,7 @@ export default class Player {
         context.drawImage(
             this.jetsImage, 
             this.jetsFrameX * this.width / this.game.scale, 
-            this.jetsFrameY, 
+            this.jetsFrameY * this.width / this.game.scale, 
             this.width / this.game.scale, 
             this.height / this.game.scale,
             this.x - this.xOffset,
@@ -56,14 +52,6 @@ export default class Player {
 
         // shield upgrade
         if (this.shield) this.shield.update();
-
-        // speed upgrade
-        if (this.upgrades.improvedJets) {
-            this.speed = 15;
-            this.animationStartFrame = 9;
-            this.jetsFrameX = this.animationStartFrame;
-            this.animationMaxFrame = this.animationStartFrame + 4;
-        }
 
         // horizontal movement
         if (this.game.keys.indexOf('a') > -1) {
@@ -205,5 +193,9 @@ export default class Player {
         this.rocketCooldownTimer = this.rocketCooldown;
         this.rocketOnCooldown = false;
         this.shield = null;
+        this.animationStartFrame = 5;
+        this.jetsFrameX = this.animationStartFrame;
+        this.jetsFrameY = 1;
+        this.maxAnimationFrame = this.jetsFrameX + 4;
     }
 }

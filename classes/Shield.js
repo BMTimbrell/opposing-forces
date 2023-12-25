@@ -12,7 +12,7 @@ export default class Shield {
         this.fadingFrameX = 9 * (this.width / 2) / this.game.scale;
         this.frameY = 4 * (this.width / 2) / this.game.scale;
         this.fading = false;
-        this.gracePeriod = 15;
+        this.gracePeriod = 20;
     }
 
     draw(context) {
