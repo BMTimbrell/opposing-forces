@@ -40,13 +40,19 @@ export default class Game {
 
         // update mouse position
         this.canvas.addEventListener('mousemove', e => {
-            this.mouse.x = e.x - this.canvasPosition.left;
-            this.mouse.y = e.y - this.canvasPosition.top;
+            this.mouse.x = (e.x - this.canvasPosition.left) 
+                * this.canvas.width / this.canvas.clientWidth;
+            this.mouse.y = (e.y - this.canvasPosition.top) 
+                * this.canvas.height / this.canvas.clientHeight;
         });
 
-        this.canvas.addEventListener('mouseleave', e => {
+        this.canvas.addEventListener('mouseleave', () => {
             this.mouse.x = undefined;
             this.mouse.y = undefined;
+        });
+
+        window.addEventListener('resize', () => {
+            this.canvasPosition = this.canvas.getBoundingClientRect();
         });
     }
 

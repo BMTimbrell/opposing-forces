@@ -170,7 +170,33 @@ export class ArmouredShooter extends Shooter {
 }
 
 export class DoubleShooter extends Shooter {
-    
+    constructor(game, positionX, positionY) {
+        super(game, positionX, positionY);
+        this.lives = 5;
+        this.frameX = 4;
+        this.frameY = 2;
+        this.goldDropped = 30;
+    }
+
+    update(x, y) {
+        super.update(x, y);
+        this.lastShot++;
+        if (
+            Math.random() < this.shootChance && 
+            this.game.enemyProjectilesOnScreen < 5 &&
+            this.lastShot > this.attackInterval
+        ) {
+            const projectiles = this.game.getProjectile('enemyProjectile', 2);
+            const projectile_1 = projectiles[0];
+            const projectile_2 = projectiles[1];
+            if (projectile_1 && projectile_2) {
+                projectile_1.start(this.x + 15 - this.xOffset, this.y);
+                projectile_2.start(this.x + 65 - this.xOffset, this.y);
+                this.game.enemyProjectilesOnScreen++;
+                this.lastShot = 0;
+            }
+        }
+    }
 }
 
 export class Boss extends Enemy {
