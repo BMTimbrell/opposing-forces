@@ -51,11 +51,11 @@ export default class Wave {
 
     create() {
         if (isBossWave(this.game.waveCount, this.game.bossWaves)) {
-            if (this.game.waveCount === 10) {
+            if (this.game.waveCount === this.game.bossWaves[0]) {
+                this.enemies.push(new Boss_1(this.game, 0, 0));
+            } else if (this.game.waveCount === this.game.bossWaves[1]) {
                 this.enemies.push(new Boss_2(this.game, 0, 0));
-                return;
             }
-            this.enemies.push(new Boss_1(this.game, 0, 0));
             return;
         }
         for (let y = 0; y < this.game.rows; y++) {
@@ -107,58 +107,60 @@ export default class Wave {
                     break;
                 case 2: 
                     chance = (
-                        type === ArmouredEnemy ? 0.2 :
+                        type === ArmouredEnemy ? 0.1 :
                         type === Shooter ? 0 :
                         type === ArmouredShooter ? 0 :
-                        0
+                        0.5
                     );
                     break;
                 case 3: 
                     chance = (
-                        type === ArmouredEnemy ? 0.3 :
-                        type === Shooter ? 0.1 :
+                        type === ArmouredEnemy ? 0.2 :
+                        type === Shooter ? 0 :
                         type === ArmouredShooter ? 0 :
-                        0
+                        0.5
                     );
                     break;
                 case 4:
                     chance = (
+                        type === ArmouredEnemy ? 0.3 :
+                        type === Shooter ? 0.1 :
+                        type === ArmouredShooter ? 0 :
+                        0.5
+                    );
+                    break;
+                case 5:
+                    chance = (
                         type === ArmouredEnemy ? 0.4 :
                         type === Shooter ? 0.2 :
-                        type === ArmouredShooter ? 0.1 :
-                        0
+                        type === ArmouredShooter ? 0 :
+                        0.5
                     );
                     break;
                 case 6:
                     chance = (
-                        type === ArmouredEnemy ? 0.5 :
                         type === Shooter ? 0.3 :
-                        type === ArmouredShooter ? 0.2 :
-                        0
+                        type === ArmouredShooter ? 0.1 :
+                        0.5
                     );
                     break;
                 case 7:
                     chance = (
-                        type === ArmouredEnemy ? 0.5 :
                         type === Shooter ? 0.4 :
-                        type === ArmouredShooter ? 0.3 :
-                        0
-                    );
-                    break;
-                case 8:
-                    chance = (
-                        type === ArmouredEnemy ? 0.5 :
-                        type === Shooter ? 0.5 :
-                        type === ArmouredShooter ? 0.4 :
-                        0
+                        type === ArmouredShooter ? 0.2 :
+                        0.5
                     );
                     break;
                 case 9:
                     chance = (
-                        type === ArmouredEnemy ? 0.5 :
-                        type === Shooter ? 0.5 :
-                        type === ArmouredShooter ? 0.5 :
-                        0
+                        type === ArmouredShooter ? 0.3 :
+                        0.5
+                    );
+                    break;
+                case 10:
+                    chance = (
+                        type === ArmouredShooter ? 0.4 :
+                        0.5
                     );
                     break;
                 default:
@@ -166,7 +168,7 @@ export default class Wave {
                         type === ArmouredEnemy ? 0.5 :
                         type === Shooter ? 0.5 :
                         type === ArmouredShooter ? 0.5 :
-                        0
+                        0.5
                     );
             }
 

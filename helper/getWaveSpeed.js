@@ -8,7 +8,7 @@ export default function getWaveSpeed(game, enemies) {
         waveSize(enemies) === 'giant' ? 0.5 :
         waveSize(enemies) === 'large' ? 1 :
         waveSize(enemies) === 'medium' ? 2 :
-        waveSize(enemies) === 'small' ? 3 :
+        waveSize(enemies) === 'small' ? 2.5 :
         waveSize(enemies) === 'tiny' ? 4 :
         6
     );

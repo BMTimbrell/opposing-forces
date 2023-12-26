@@ -25,7 +25,7 @@ export default class Game {
         this.numberOfProjectiles = 20;
         this.createProjectiles();
 
-        this.bossWaves = [2, 10, 15];
+        this.bossWaves = [8, 12, 15];
         this.restart();
 
         window.addEventListener('keydown', e => {
@@ -181,7 +181,7 @@ export default class Game {
     newWave() {
         if (
             Math.random() < 0.5 && 
-            this.columns * this.enemySize < this.width * 0.9 &&
+            this.columns * this.enemySize < this.width * 0.8 &&
             !isBossWave(this.waveCount, this.bossWaves)
         ) {
             this.columns++;

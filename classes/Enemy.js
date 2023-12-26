@@ -135,7 +135,10 @@ export class Shooter extends Enemy {
         this.goldDropped = 20;
         this.shootChance = 0.01;
         this.lastShot = 0;
-        this.attackInterval = 50;
+        this.attackInterval = 160;
+        this.animationFrameX = 5; 
+        this.animationFrameY = 6;
+        this.maxAnimationFrame = this.animationFrameX + 3;
     }
 
     update(x, y) {
@@ -150,6 +153,7 @@ export class Shooter extends Enemy {
             if (projectile) {
                 projectile.start(this.x + this.width / 2, this.y + this.height);
                 this.game.enemyProjectilesOnScreen++;
+                this.lastShot = 0;
             }
         }
     }
@@ -163,6 +167,10 @@ export class ArmouredShooter extends Shooter {
         this.frameY = 4;
         this.goldDropped = 25;
     }
+}
+
+export class DoubleShooter extends Shooter {
+    
 }
 
 export class Boss extends Enemy {

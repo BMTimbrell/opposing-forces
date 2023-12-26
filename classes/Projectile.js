@@ -190,11 +190,11 @@ export class StrongLaser extends Projectile {
 export class EnemyProjectile extends Projectile {
     constructor(game) {
         super(game);
-        this.speed = 5;
+        this.speed = 6;
         this.damage = 1;
-        this.frameX = 42;
+        this.frameX = 35;
         this.frameY = 3;
-        this.width = 4 * this.game.scale;
+        this.width = 3 * this.game.scale;
         this.height = 2 * this.game.scale;
         this.type = 'enemyProjectile';
     }
