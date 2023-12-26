@@ -63,10 +63,6 @@ export default class Enemy {
         
         // enemy dies
         if (this.lives < 1) {
-            if (this instanceof Boss) {
-                this.game.waves[0].speedX = 0;
-            }
-
             // death animation
             this.image = document.getElementById(
                 !(this instanceof Boss) ? 'animations' : 'explosion'
@@ -139,6 +135,7 @@ export class Shooter extends Enemy {
         this.goldDropped = 20;
         this.shootChance = 0.01;
         this.lastShot = 0;
+        this.attackInterval = 50;
     }
 
     update(x, y) {
@@ -147,7 +144,7 @@ export class Shooter extends Enemy {
         if (
             Math.random() < this.shootChance && 
             this.game.enemyProjectilesOnScreen < 5 &&
-            this.lastShot > 20
+            this.lastShot > this.attackInterval
         ) {
             const projectile = this.game.getProjectile('enemyProjectile');
             if (projectile) {
@@ -176,6 +173,7 @@ export class Boss extends Enemy {
         this.animationFrameX = 0;
         this.animationFrameY = 0;
         this.lastShot = 0;
+        this.attackInterval = 50;
     }
 
     update(x, y) {
@@ -200,7 +198,7 @@ export class Boss_1 extends Boss {
         if (
             Math.random() < this.shootChance && 
             this.game.enemyProjectilesOnScreen < 4 && 
-            this.lastShot > 20
+            this.lastShot > this.attackInterval
         ) {
             this.lastShot = 0;
             const projectiles = this.game.getProjectile('bossProjectile_1', 2);
@@ -225,6 +223,7 @@ export class Boss_2 extends Boss {
         this.xOffset = 10;
         this.yOffset = 20;
         this.goldDropped = 200;
+        this.attackInterval = 30;
     }
 
     update(x, y) {
@@ -232,7 +231,7 @@ export class Boss_2 extends Boss {
         if (
             Math.random() < this.shootChance && 
             this.game.enemyProjectilesOnScreen < 4 && 
-            this.lastShot > 20
+            this.lastShot > this.attackInterval
         ) {
             this.lastShot = 0;
             const projectiles = this.game.getProjectile('bossProjectile_2', 2);

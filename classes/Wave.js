@@ -1,4 +1,6 @@
 import Enemy, { ArmouredEnemy, Shooter, ArmouredShooter, Boss_1, Boss_2 } from './Enemy.js';
+import isBossWave from '../helper/isBossWave.js';
+import getWaveSpeed from '../helper/getWaveSpeed.js';
 
 export default class Wave {
     constructor(game) {
@@ -7,10 +9,10 @@ export default class Wave {
         this.height = this.game.rows * this.game.enemySize;
         this.x = this.game.width * 0.5 - this.width * 0.5;
         this.y = -this.height;
-        this.speed = 2;
+        this.enemies = [];
+        this.speed = getWaveSpeed(this.game, this.enemies);
         this.speedX = Math.random() < 0.5 ? -this.speed : this.speed;
         this.speedY = 0;
-        this.enemies = [];
         this.nextWaveTrigger = false;
         this.create();
     }
@@ -18,31 +20,37 @@ export default class Wave {
     render(context) {
         if (this.y < 0) this.y += 5;
 
+        // change speed based on wave number and enemies on screen
+        this.updateSpeed();
+
         if (
             this.checkLeftMostEnemy() < 0 || 
             this.checkRightMostEnemy() > this.game.width
         ) {
             this.speedX *= -1;
-            if (this.game.bossWaves.some(wave => wave === this.game.waveCount)) 
+            if (isBossWave(this.game.waveCount, this.game.bossWaves)) {
                 this.speedY = this.game.enemySize * 2;
-            else this.speedY = this.game.enemySize;
+            } else {
+                this.speedY = this.game.enemySize;
+            }
         }
 
         this.x += this.speedX;
-        this.y += this.speedY
+        this.y += this.speedY;
         this.speedY = 0;
-
+        
+        // update and draw enemies
         this.enemies.forEach(enemy => {
             enemy.update(this.x, this.y);
             enemy.draw(context);
         });
-        this.enemies = this.enemies.filter(enemy => !enemy.markedForDeletion);
-
         
+        //delete marked for deletion enemies
+        this.enemies = this.enemies.filter(enemy => !enemy.markedForDeletion);
     }
 
     create() {
-        if (this.game.bossWaves.some(wave => wave === this.game.waveCount)) {
+        if (isBossWave(this.game.waveCount, this.game.bossWaves)) {
             if (this.game.waveCount === 10) {
                 this.enemies.push(new Boss_2(this.game, 0, 0));
                 return;
@@ -79,12 +87,12 @@ export default class Wave {
     }
 
     checkRightMostEnemy() {
-        let x = 0;
+        let x = this.x;
         for (let i = 0; i < this.enemies.length; i++) {
             if (this.enemies[i].x === this.x + this.width - this.enemies[i].width) {
                 x = this.enemies[i].x + this.enemies[i].width;
                 break;
-            } else if (this.enemies[i].x > x) {
+            } else if (this.enemies[i].x >= x) {
                 x = this.enemies[i].x + this.enemies[i].width;
             }
         }
@@ -163,5 +171,10 @@ export default class Wave {
             }
 
             return chance;
+    }
+
+    updateSpeed() {
+        this.speed = getWaveSpeed(this.game, this.enemies);
+        this.speedX = this.speedX >= 0 ? this.speed : -this.speed;
     }
 }
