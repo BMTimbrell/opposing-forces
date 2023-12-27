@@ -118,7 +118,7 @@ export class Rocket extends Projectile {
     }
 
     update() {
-        if (this.game.player.upgrades.rocketDamage) this.damage = 3;
+        if (this.game.player.upgrades.rocketDamage) this.damage = 4;
         super.update();
         // animation
         this.animationTimer--;
@@ -223,6 +223,19 @@ export class EnemyProjectile extends Projectile {
             );
         }
         context.restore();
+    }
+}
+
+export class DoubleShooterProjectile extends EnemyProjectile {
+    constructor(game) {
+        super(game);
+        this.damage = 1;
+        this.speed = 8;
+        this.type = 'doubleShooterProjectile';
+        this.frameX = 4;
+        this.frameY = 4;
+        this.width = 1 * this.game.scale;
+        this.height = 1 * this.game.scale;
     }
 }
 

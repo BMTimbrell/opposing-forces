@@ -1,5 +1,5 @@
 import Player from './Player.js';
-import Projectile, { EnemyProjectile, StrongLaser, Rocket, BossProjectile_1, BossProjectile_2 } from './Projectile.js';
+import Projectile, { EnemyProjectile, StrongLaser, Rocket, BossProjectile_1, BossProjectile_2, DoubleShooterProjectile } from './Projectile.js';
 import Wave from './Wave.js';
 import UpgradeMenu from './UpgradeMenu.js';
 import isBossWave from '../helper/isBossWave.js';
@@ -25,7 +25,7 @@ export default class Game {
         this.numberOfProjectiles = 20;
         this.createProjectiles();
 
-        this.bossWaves = [8, 12, 15];
+        this.bossWaves = [8, 12, 16];
         this.restart();
 
         window.addEventListener('keydown', e => {
@@ -104,6 +104,7 @@ export default class Game {
         for (let i = 0; i < this.numberOfProjectiles; i++) {
             this.projectilesPool.push(new Projectile(this));
             this.projectilesPool.push(new StrongLaser(this));
+            this.projectilesPool.push(new DoubleShooterProjectile(this));
         }
 
         for (let i = 0; i < 10; i++) {
@@ -208,12 +209,8 @@ export default class Game {
             this.rows++;
         }
 
-        // stop there being too many enemies early on
-        // if (this.waveCount < 10 && this.columns * this.enemySize > this.width * 0.5) {
-        //     this.columns--;
-        //     if (this.rows * this.enemySize < this.height * 0.5)
-        //         this.rows++;
-        // } else if (this.waveCount === 16) this.rows++;
+        if (this.waveCount === 16) this.rows++;
+        else if (this.waveCount === 21) this.rows++;
 
         const wave = new Wave(this);
         this.waves.push(wave);

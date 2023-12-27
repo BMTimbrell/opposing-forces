@@ -144,6 +144,8 @@ export class Shooter extends Enemy {
         this.animationFrameX = 5; 
         this.animationFrameY = 6;
         this.maxAnimationFrame = this.animationFrameX + 3;
+        this.numOfShots = 1;
+        this.maxProjectiles = 5;
     }
 
     update(x, y) {
@@ -151,16 +153,27 @@ export class Shooter extends Enemy {
         this.lastShot++;
         if (
             Math.random() < this.shootChance && 
-            this.game.enemyProjectilesOnScreen < 5 &&
+            this.game.enemyProjectilesOnScreen < this.maxProjectiles &&
             this.lastShot > this.attackInterval &&
             this.lives > 0
         ) {
-            const projectile = this.game.getProjectile('enemyProjectile');
-            if (projectile) {
-                projectile.start(this.x + this.width / 2, this.y + this.height);
-                this.game.enemyProjectilesOnScreen++;
-                this.lastShot = 0;
+            if (this.numOfShots === 2) {
+                const projectiles = this.game.getProjectile('doubleShooterProjectile', 2);
+                const projectile_1 = projectiles[0];
+                const projectile_2 = projectiles[1];
+                if (projectile_1 && projectile_2) {
+                    projectile_1.start(this.x + this.xOffset, this.y + this.height - this.yOffset);
+                    projectile_2.start(this.x + this.xOffset_2, this.y + this.height - this.yOffset);
+                    this.game.enemyProjectilesOnScreen += 2;
+                }
+            } else {
+                const projectile = this.game.getProjectile('enemyProjectile');
+                if (projectile) {
+                    projectile.start(this.x + this.width / 2, this.y + this.height);
+                    this.game.enemyProjectilesOnScreen++;
+                }
             }
+            this.lastShot = 0;
         }
     }
 }
@@ -178,31 +191,42 @@ export class ArmouredShooter extends Shooter {
 export class DoubleShooter extends Shooter {
     constructor(game, positionX, positionY) {
         super(game, positionX, positionY);
-        this.lives = 5;
+        this.lives = 4;
         this.frameX = 4;
         this.frameY = 2;
         this.goldDropped = 30;
+        this.numOfShots = 2;
+        this.yOffset = 30;
+        this.xOffset = 25;
+        this.xOffset_2 = 65
+        this.attackInterval = 60;
+        this.maxProjectiles = 8;
+        this.animationFrameX = 9; 
+        this.animationFrameY = 6;
+        this.maxAnimationFrame = this.animationFrameX + 3;
     }
 
     update(x, y) {
         super.update(x, y);
         this.lastShot++;
-        if (
-            Math.random() < this.shootChance && 
-            this.game.enemyProjectilesOnScreen < 5 &&
-            this.lastShot > this.attackInterval &&
-            this.lives > 0
-        ) {
-            const projectiles = this.game.getProjectile('enemyProjectile', 2);
-            const projectile_1 = projectiles[0];
-            const projectile_2 = projectiles[1];
-            if (projectile_1 && projectile_2) {
-                projectile_1.start(this.x + 15 - this.xOffset, this.y);
-                projectile_2.start(this.x + 65 - this.xOffset, this.y);
-                this.game.enemyProjectilesOnScreen++;
-                this.lastShot = 0;
-            }
-        }
+    }
+}
+
+export class ArmouredDoubleShooter extends DoubleShooter {
+    constructor(game, positionX, positionY) {
+        super(game, positionX, positionY);
+        this.lives = 6;
+        this.frameX = 7;
+        this.frameY = 4;
+        this.goldDropped = 35;
+        this.yOffset = 0;
+        this.xOffset = 10;
+        this.xOffset_2 = 70
+    }
+
+    update(x, y) {
+        super.update(x, y);
+        this.lastShot++;
     }
 }
 

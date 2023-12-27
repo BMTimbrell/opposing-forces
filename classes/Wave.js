@@ -1,4 +1,4 @@
-import Enemy, { ArmouredEnemy, Shooter, ArmouredShooter, Boss_1, Boss_2 } from './Enemy.js';
+import Enemy, { ArmouredEnemy, Shooter, ArmouredShooter, Boss_1, Boss_2, DoubleShooter, ArmouredDoubleShooter } from './Enemy.js';
 import isBossWave from '../helper/isBossWave.js';
 import getWaveSpeed from '../helper/getWaveSpeed.js';
 
@@ -64,6 +64,8 @@ export default class Wave {
                 const enemyY = y * this.game.enemySize;
 
                 const enemyType = (
+                    Math.random() < this.calculateEnemyChance(ArmouredDoubleShooter) ? ArmouredDoubleShooter : 
+                    Math.random() < this.calculateEnemyChance(DoubleShooter) ? DoubleShooter : 
                     Math.random() < this.calculateEnemyChance(ArmouredShooter) ? ArmouredShooter : 
                     Math.random() < this.calculateEnemyChance(Shooter) ? Shooter : 
                     Math.random() < this.calculateEnemyChance(ArmouredEnemy) ? ArmouredEnemy : Enemy
@@ -110,6 +112,8 @@ export default class Wave {
                         type === ArmouredEnemy ? 0.1 :
                         type === Shooter ? 0 :
                         type === ArmouredShooter ? 0 :
+                        type === DoubleShooter ? 0 :
+                        type === ArmouredDoubleShooter ? 0 :
                         0.5
                     );
                     break;
@@ -118,6 +122,8 @@ export default class Wave {
                         type === ArmouredEnemy ? 0.2 :
                         type === Shooter ? 0 :
                         type === ArmouredShooter ? 0 :
+                        type === DoubleShooter ? 0 :
+                        type === ArmouredDoubleShooter ? 0 :
                         0.5
                     );
                     break;
@@ -126,6 +132,8 @@ export default class Wave {
                         type === ArmouredEnemy ? 0.3 :
                         type === Shooter ? 0.1 :
                         type === ArmouredShooter ? 0 :
+                        type === DoubleShooter ? 0 :
+                        type === ArmouredDoubleShooter ? 0 :
                         0.5
                     );
                     break;
@@ -134,6 +142,8 @@ export default class Wave {
                         type === ArmouredEnemy ? 0.4 :
                         type === Shooter ? 0.2 :
                         type === ArmouredShooter ? 0 :
+                        type === DoubleShooter ? 0 :
+                        type === ArmouredDoubleShooter ? 0 :
                         0.5
                     );
                     break;
@@ -141,6 +151,8 @@ export default class Wave {
                     chance = (
                         type === Shooter ? 0.3 :
                         type === ArmouredShooter ? 0.1 :
+                        type === DoubleShooter ? 0 :
+                        type === ArmouredDoubleShooter ? 0 :
                         0.5
                     );
                     break;
@@ -148,28 +160,76 @@ export default class Wave {
                     chance = (
                         type === Shooter ? 0.4 :
                         type === ArmouredShooter ? 0.2 :
+                        type === DoubleShooter ? 0 :
+                        type === ArmouredDoubleShooter ? 0 :
                         0.5
                     );
                     break;
                 case 9:
                     chance = (
                         type === ArmouredShooter ? 0.3 :
+                        type === DoubleShooter ? 0 :
+                        type === ArmouredDoubleShooter ? 0 :
                         0.5
                     );
                     break;
                 case 10:
                     chance = (
                         type === ArmouredShooter ? 0.4 :
+                        type === DoubleShooter ? 0 :
+                        type === ArmouredDoubleShooter ? 0 :
+                        0.5
+                    );
+                    break;
+                case 11:
+                    chance = (
+                        type === DoubleShooter ? 0 :
+                        type === ArmouredDoubleShooter ? 0 :
+                        0.5
+                    );
+                    break;
+                case 13:
+                    chance = (
+                        type === DoubleShooter ? 0.1 :
+                        type === ArmouredDoubleShooter ? 0 :
+                        0.5
+                    );
+                    break;
+                case 14:
+                    chance = (
+                        type === DoubleShooter ? 0.2 :
+                        type === ArmouredDoubleShooter ? 0 :
+                        0.5
+                    );
+                    break;
+                case 15:
+                    chance = (
+                        type === DoubleShooter ? 0.3 :
+                        type === ArmouredDoubleShooter ? 0.1 :
+                        0.5
+                    );
+                    break;
+                case 17:
+                    chance = (
+                        type === DoubleShooter ? 0.4 :
+                        type === ArmouredDoubleShooter ? 0.2 :
+                        0.5
+                    );
+                    break;
+                case 18:
+                    chance = (
+                        type === ArmouredDoubleShooter ? 0.3 :
+                        0.5
+                    );
+                    break;
+                case 19:
+                    chance = (
+                        type === ArmouredDoubleShooter ? 0.4 :
                         0.5
                     );
                     break;
                 default:
-                    chance = (
-                        type === ArmouredEnemy ? 0.5 :
-                        type === Shooter ? 0.5 :
-                        type === ArmouredShooter ? 0.5 :
-                        0.5
-                    );
+                    chance = 0.5;
             }
 
             return chance;
