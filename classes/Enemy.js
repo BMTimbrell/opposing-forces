@@ -86,10 +86,15 @@ export default class Enemy {
         }
 
         // check collision with player
-        if (this.game.checkCollision(this, this.game.player) && this.lives > 0) {
+        if (
+            this.game.checkCollision(this, this.game.player) && 
+            this.lives > 0 &&
+            this.game.player.lives > 0
+        ) {
             if (!(this instanceof Boss)) {
                 this.lives = 0;
                 this.game.player.lives--;
+                if (this.game.player.lives === 0) this.game.player.die();
             } else {
                 if (!this.game.player.shield) this.game.player.lives = 0;
             }
@@ -147,7 +152,8 @@ export class Shooter extends Enemy {
         if (
             Math.random() < this.shootChance && 
             this.game.enemyProjectilesOnScreen < 5 &&
-            this.lastShot > this.attackInterval
+            this.lastShot > this.attackInterval &&
+            this.lives > 0
         ) {
             const projectile = this.game.getProjectile('enemyProjectile');
             if (projectile) {
@@ -184,7 +190,8 @@ export class DoubleShooter extends Shooter {
         if (
             Math.random() < this.shootChance && 
             this.game.enemyProjectilesOnScreen < 5 &&
-            this.lastShot > this.attackInterval
+            this.lastShot > this.attackInterval &&
+            this.lives > 0
         ) {
             const projectiles = this.game.getProjectile('enemyProjectile', 2);
             const projectile_1 = projectiles[0];
@@ -232,7 +239,8 @@ export class Boss_1 extends Boss {
         if (
             Math.random() < this.shootChance && 
             this.game.enemyProjectilesOnScreen < 4 && 
-            this.lastShot > this.attackInterval
+            this.lastShot > this.attackInterval &&
+            this.lives > 0
         ) {
             this.lastShot = 0;
             const projectiles = this.game.getProjectile('bossProjectile_1', 2);
@@ -265,7 +273,8 @@ export class Boss_2 extends Boss {
         if (
             Math.random() < this.shootChance && 
             this.game.enemyProjectilesOnScreen < 4 && 
-            this.lastShot > this.attackInterval
+            this.lastShot > this.attackInterval &&
+            this.lives > 0
         ) {
             this.lastShot = 0;
             const projectiles = this.game.getProjectile('bossProjectile_2', 2);

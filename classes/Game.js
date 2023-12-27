@@ -57,8 +57,12 @@ export default class Game {
     }
 
     update() {
-        // only update player and projectiles if menu not showing
-        if (!this.upgradeMenu.isShowing) this.player.update();
+        // only update player if menu not showing and player alive 
+        // or not finished death animation
+        if (!this.upgradeMenu.isShowing && !this.player.doneDying) 
+            this.player.update();
+
+        // remove projectile when menu is showing
         if (this.upgradeMenu.isShowing) {
             this.projectilesPool.forEach(projectile => {
                 if (!projectile.free) projectile.reset();
@@ -87,7 +91,10 @@ export default class Game {
         this.waves.forEach(wave => wave.render(context));
 
         this.projectilesPool.forEach(projectile => projectile.draw(context));
-        if (!this.upgradeMenu.isShowing) this.player.draw(context);
+
+        if (!this.upgradeMenu.isShowing && !this.player.doneDying) 
+            this.player.draw(context);
+        
         this.drawStatusText(context);
 
         if (this.upgradeMenu.isShowing) this.upgradeMenu.draw(context);
@@ -162,13 +169,16 @@ export default class Game {
                 context.fillRect(20 + 2 * i, 180, 2, 15);
             }
             context.restore();
-            context.save();
-            context.shadowOffsetX = 0;
-            context.shadowOffsetY = 0;
-            context.fillStyle = this.player.rocketOnCooldown ? 'white' : 'black';
-            context.font = '14px Pixel';
-            context.fillText('Press E', 70, 195);
-            context.restore();
+            
+            if (!this.player.rocketOnCooldown) {
+                context.save();
+                context.shadowOffsetX = 0;
+                context.shadowOffsetY = 0;
+                context.fillStyle = 'black';
+                context.font = '14px Pixel';
+                context.fillText('Press E', 70, 195);
+                context.restore();
+            }
         }
 
         // game over

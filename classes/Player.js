@@ -5,10 +5,10 @@ export default class Player {
     constructor(game) {
         this.game = game;
         this.restart();
-        this.image = document.getElementById('ships');
-        this.jetsImage = document.getElementById('animations');
+        this.animationImage = document.getElementById('animations');
         this.xOffset = 0;
-        this.animationTimer = this.animationDelay;
+        this.dAnimationDelay = this.animationDelay;
+        this.dAnimationTimer = this.dAnimationDelay;
     }
 
     draw(context) {
@@ -26,17 +26,19 @@ export default class Player {
         );
         
         //draw jets
-        context.drawImage(
-            this.jetsImage, 
-            this.jetsFrameX * this.width / this.game.scale, 
-            this.jetsFrameY * this.width / this.game.scale, 
-            this.width / this.game.scale, 
-            this.height / this.game.scale,
-            this.x - this.xOffset,
-            this.y + this.height - 10,
-            this.width,
-            this.height
-        );
+        if (this.lives > 0) {
+            context.drawImage(
+                this.animationImage, 
+                this.jetsFrameX * this.width / this.game.scale, 
+                this.jetsFrameY * this.width / this.game.scale, 
+                this.width / this.game.scale, 
+                this.height / this.game.scale,
+                this.x - this.xOffset,
+                this.y + this.height - 10,
+                this.width,
+                this.height
+            );
+        }
 
         //draw shield
         if (this.shield) {
@@ -53,21 +55,23 @@ export default class Player {
         if (this.shield) this.shield.update();
 
         // horizontal movement
-        if (this.game.keys.indexOf('a') > -1) {
-            this.x -= this.speed;
-            this.frameX = 0;
-            this.xOffset = 8;
-            if (this.shield) this.shield.x -= this.speed;
-        } else if (this.game.keys.indexOf('d') > -1) {
-            this.x += this.speed;
-            this.frameX = 2;
-            this.xOffset = -8;
-            if (this.shield) this.shield.x += this.speed;
-        } else {
-            this.frameX = 1;
-            this.xOffset = 0;
+        if (this.lives > 0) {
+            if (this.game.keys.indexOf('a') > -1) {
+                this.x -= this.speed;
+                this.frameX = 0;
+                this.xOffset = 8;
+                if (this.shield) this.shield.x -= this.speed;
+            } else if (this.game.keys.indexOf('d') > -1) {
+                this.x += this.speed;
+                this.frameX = 2;
+                this.xOffset = -8;
+                if (this.shield) this.shield.x += this.speed;
+            } else {
+                this.frameX = 1;
+                this.xOffset = 0;
+            }
         }
-
+        
         // rocket cooldown
         if (this.rocketOnCooldown)
             this.upgrades.reducedRocketCooldown ? this.rocketCooldownTimer++ 
@@ -76,10 +80,16 @@ export default class Player {
         this.rocketOnCooldown = this.rocketCooldownTimer < this.rocketCooldown;
 
         // shooting
-        if (this.game.keys.indexOf(' ') > -1 && this.canFire) this.shoot();
+        if (this.game.keys.indexOf(' ') > -1 && this.canFire && this.lives > 0) 
+            this.shoot();
 
         // fire rocket
-        if (this.game.keys.indexOf('e') > -1 && this.upgrades.rocket && !this.rocketOnCooldown) {
+        if (
+            this.game.keys.indexOf('e') > -1 && 
+            this.upgrades.rocket && 
+            !this.rocketOnCooldown &&
+            this.lives > 0
+        ) {
             const rocket = this.game.getProjectile('rocket');
             if (rocket) {
                 rocket.start(this.x + this.width / 2 - this.xOffset, this.y);
@@ -108,14 +118,26 @@ export default class Player {
             this.canFire = false;
             this.attackTimer++;
         }
-
+       
         // jets animation
         this.animationTimer--;
-        if (this.animationTimer === 0) {
+        if (this.animationTimer === 0 && this.lives > 0) {
             this.animationTimer = this.animationDelay;
             this.jetsFrameX++;
             if (this.jetsFrameX === this.maxAnimationFrame) {
                 this.jetsFrameX = this.animationStartFrame;
+            }
+        }
+
+        // death animation
+        if (this.lives === 0) {
+            this.dAnimationTimer--;
+            if (this.dAnimationTimer === 0) {
+                this.dAnimationTimer = this.dAnimationDelay;
+                this.frameX++;
+                if (this.frameX === this.maxAnimationFrame) {
+                    this.doneDying = true;
+                }
             }
         }
 
@@ -127,9 +149,11 @@ export default class Player {
             if (
                 !projectile.free && 
                 projectile instanceof EnemyProjectile && 
-                this.game.checkCollision(projectile, this)
+                this.game.checkCollision(projectile, this) &&
+                this.lives > 0
             ) {
                 this.lives -= projectile.damage;
+                if (this.lives === 0) this.die();
                 projectile.reset();
             }
         });
@@ -162,11 +186,19 @@ export default class Player {
         );
     }
 
+    die() {
+        this.image = this.animationImage;
+        this.frameX = 9;
+        this.frameY = 6;
+        this.maxDAnimationFrame = this.frameX + 4;
+    }
+
     restart() {
         this.width = 8 * this.game.scale;
         this.height = 8 * this.game.scale;
         this.x = this.game.width / 2 - this.width / 2;
         this.y =  this.game.height - this.height - 20;
+        this.image = document.getElementById('ships');
         this.speed = 10;
         this.maxLives = 3;
         this.lives = this.maxLives;
@@ -197,5 +229,7 @@ export default class Player {
         this.jetsFrameY = 1;
         this.maxAnimationFrame = this.jetsFrameX + 4;
         this.animationDelay = 4;
+        this.animationTimer = this.animationDelay;
+        this.doneDying = false;
     }
 }
