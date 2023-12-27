@@ -1,4 +1,4 @@
-import { EnemyProjectile } from "./Projectile.js";
+import { EnemyProjectile, BossBomb } from "./Projectile.js";
 
 export default class Shield {
     constructor(game, x, y, width, height) {
@@ -42,6 +42,11 @@ export default class Shield {
                 projectile instanceof EnemyProjectile && 
                 this.game.checkCollision(projectile, this)
             ) {
+                if (projectile instanceof BossBomb) {
+                    if (!projectile.isBoomTime) projectile.explode();
+                    else this.fading = true;
+                    return;
+                }
                 this.fading = true;
                 projectile.reset();
             }

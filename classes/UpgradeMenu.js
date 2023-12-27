@@ -51,7 +51,7 @@ export default class UpgradeMenu {
         } else if (!this.game.player.upgrades.reducedRocketCooldown) {
             splitLines(
                 context, 
-                `Rocket Cooldown: reduce\ncooldown of rockets\nCost: ${this.buttons[2].upgradeCost}g`, 
+                `Rocket Cooldown: reduce\ncooldown of rockets\nCost: ${this.buttons[11].upgradeCost}g`, 
                 this.x + this.gap, 
                 this.y + this.gap * 5 + textHeight, 
                 20
@@ -70,7 +70,7 @@ export default class UpgradeMenu {
         } else if (!this.game.player.upgrades.rapidFire_2) {
             splitLines(
                 context, 
-                `Rapid Fire II: further\nincrease rate of fire\nCost: ${this.buttons[9].upgradeCost}g`, 
+                `Rapid Fire II: further\nincrease rate of fire\nCost: ${this.buttons[10].upgradeCost}g`, 
                 this.x + this.gap, 
                 this.y + this.gap * 10 + textHeight, 
                 20
@@ -134,7 +134,7 @@ export default class UpgradeMenu {
         if (!this.game.player.upgrades.shield) {
             splitLines(
                 context, 
-                `Shield: start each round\nwith a damage absorbing\nshield\nCost: ${this.buttons[7].upgradeCost}g`, 
+                `Shield: start each round\nwith a damage absorbing\nshield\nCost: ${this.buttons[9].upgradeCost}g`, 
                 this.x + this.gap, 
                 this.y + this.gap * 35 + textHeight, 
                 20
@@ -172,6 +172,9 @@ export default class UpgradeMenu {
                             this.game.player.speed = 15;
                             this.game.player.animationDelay = 2;
                         }
+
+                        // change sprite when have dual shot upgrade
+                        if (this.game.player.upgrades.dualShot) this.game.player.frameY = 2;
                         
                         // hide menu and start next wave
                         this.isShowing = false;
@@ -237,7 +240,7 @@ export default class UpgradeMenu {
                     50
                 ),
                 name: 'rocket',
-                upgradeCost: 30,
+                upgradeCost: 100,
                 isEnabled: true
             },
             {
@@ -250,7 +253,7 @@ export default class UpgradeMenu {
                     50
                 ),
                 name: 'rocketDamage',
-                upgradeCost: 50,
+                upgradeCost: 400,
                 isEnabled: false
             },
             {
@@ -263,7 +266,7 @@ export default class UpgradeMenu {
                     50
                 ),
                 name: 'rapidFire',
-                upgradeCost: 50,
+                upgradeCost: 150,
                 isEnabled: true
             },
             {
@@ -276,7 +279,7 @@ export default class UpgradeMenu {
                     50
                 ),
                 name: 'improvedJets',
-                upgradeCost: 50,
+                upgradeCost: 100,
                 isEnabled: true
             },
             {
@@ -289,7 +292,7 @@ export default class UpgradeMenu {
                     50
                 ),
                 name: 'dualShot',
-                upgradeCost: 50,
+                upgradeCost: 500,
                 isEnabled: true
             },
             {
@@ -302,7 +305,7 @@ export default class UpgradeMenu {
                     50
                 ),
                 name: 'strongLasers',
-                upgradeCost: 50,
+                upgradeCost: 1200,
                 isEnabled: true
             },
             {
@@ -328,7 +331,7 @@ export default class UpgradeMenu {
                     50
                 ),
                 name: 'increasedLives_2',
-                upgradeCost: 50,
+                upgradeCost: 100,
                 isEnabled: false
             },
             {
@@ -341,7 +344,7 @@ export default class UpgradeMenu {
                     50
                 ),
                 name: 'shield',
-                upgradeCost: 50,
+                upgradeCost: 500,
                 isEnabled: true
             },
             {
@@ -354,7 +357,7 @@ export default class UpgradeMenu {
                     50
                 ),
                 name: 'rapidFire_2',
-                upgradeCost: 50,
+                upgradeCost: 800,
                 isEnabled: false
             },
             {
@@ -367,7 +370,7 @@ export default class UpgradeMenu {
                     50
                 ),
                 name: 'reducedRocketCooldown',
-                upgradeCost: 50,
+                upgradeCost: 500,
                 isEnabled: false
             }
         ]

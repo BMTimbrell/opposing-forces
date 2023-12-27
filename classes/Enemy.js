@@ -290,7 +290,7 @@ export class Boss extends Enemy {
 export class Boss_1 extends Boss {
     constructor(game, positionX, positionY) {
         super(game, positionX, positionY);
-        this.lives = 25;
+        this.lives = 30;
         this.maxLives = this.lives;
         this.frameX = 4;
         this.frameY = 6;
@@ -313,7 +313,7 @@ export class Boss_1 extends Boss {
 export class Boss_2 extends Boss {
     constructor(game, positionX, positionY) {
         super(game, positionX, positionY);
-        this.lives = 50;
+        this.lives = 70;
         this.maxLives = this.lives;
         this.frameX = 6;
         this.frameY = 6;
@@ -337,7 +337,7 @@ export class Boss_2 extends Boss {
 export class Boss_3 extends Boss {
     constructor(game, positionX, positionY) {
         super(game, positionX, positionY);
-        this.lives = 80;
+        this.lives = 150;
         this.maxLives = this.lives;
         this.frameX = 8;
         this.frameY = 6;
@@ -348,16 +348,25 @@ export class Boss_3 extends Boss {
         this.attackInterval = 30;
         this.projectileType = 'bossProjectile_3';
         this.bombChance = 0.01;
+        this.bombShot = 30;
+        this.bombsFired = 0;
     }
 
     update(x, y) {
         super.update(x, y);
-        if (Math.random() < this.bombChance) {
+        if (
+            Math.random() < this.bombChance && 
+            this.bombShot > 30 &&
+            this.bombsFired <= 5
+        ) {
             const bomb = this.game.getProjectile('bossBomb');
             if (bomb) {
                 bomb.start(this.x + this.width / 2, this.y + this.height - this.yOffset);
+                this.bombsFired++;
+                this.bombShot = 0;
             }
         }
+        this.bombShot++;
     }
 
     draw(context) {

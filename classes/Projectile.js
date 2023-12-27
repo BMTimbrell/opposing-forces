@@ -297,7 +297,7 @@ export class BossBomb extends EnemyProjectile {
         this.animationDelay = 4;
         this.animationTimer = this.animationDelay;
         this.maxAnimationFrame = this.explosionStartFrame + 4;
-        this.maxHealth = 15;
+        this.maxHealth = 10;
         this.health = this.maxHealth;
         this.hBarHeight = 10;
     }
@@ -373,13 +373,21 @@ export class BossBomb extends EnemyProjectile {
         // collision with player projectiles
         this.game.projectilesPool.forEach(projectile => {
             if (
+                !this.free &&
                 !projectile.free &&
-                !(projectile instanceof EnemyProjectile) && 
+                !(projectile instanceof EnemyProjectile) &&
+                !this.isBoomTime && 
                 this.game.checkCollision(this, projectile)
             ) {
-                console.log(this.health);
+                if (projectile instanceof Rocket) {
+                    if (!projectile.isBoomTime) projectile.explode();
+                    else if (projectile.canDamage) {
+                        this.health -= projectile.damage;
+                        projectile.canDamage = false;
+                    }
+                    return;
+                }
                 this.health -= projectile.damage;
-                console.log(projectile.damage);
                 projectile.reset();
                 if (this.health <= 0) this.explode();
             }

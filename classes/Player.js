@@ -8,7 +8,6 @@ export default class Player {
         this.animationImage = document.getElementById('animations');
         this.xOffset = 0;
         this.dAnimationDelay = this.animationDelay;
-        this.dAnimationTimer = this.dAnimationDelay;
     }
 
     draw(context) {
@@ -135,14 +134,11 @@ export default class Player {
             if (this.dAnimationTimer === 0) {
                 this.dAnimationTimer = this.dAnimationDelay;
                 this.frameX++;
-                if (this.frameX === this.maxAnimationFrame) {
+                if (this.frameX === this.maxDAnimationFrame) {
                     this.doneDying = true;
                 }
             }
         }
-
-        // change sprite when have dual shot upgrade
-        if (this.upgrades.dualShot) this.frameY = 2;
 
         // collision with enemy projectiles
         this.game.projectilesPool.forEach(projectile => {
@@ -240,6 +236,8 @@ export default class Player {
         this.maxAnimationFrame = this.jetsFrameX + 4;
         this.animationDelay = 4;
         this.animationTimer = this.animationDelay;
+        this.dAnimationTimer = this.dAnimationDelay;
+        this.maxDAnimationFrame = 0;
         this.doneDying = false;
     }
 }

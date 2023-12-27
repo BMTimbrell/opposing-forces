@@ -32,7 +32,7 @@ export default class Game {
         this.upgradeMenu = new UpgradeMenu(this);
 
         this.projectilesPool = [];
-        this.numberOfProjectiles = 30;
+        this.numberOfProjectiles = 20;
         this.createProjectiles();
 
         this.bossWaves = [8, 12, 16];
@@ -124,7 +124,7 @@ export default class Game {
             this.projectilesPool.push(new BossProjectile_3(this));
         }
 
-        for (let i = 0; i < 3; i++) {
+        for (let i = 0; i < 5; i++) {
             this.projectilesPool.push(new BossBomb(this));
         }
 
@@ -225,7 +225,7 @@ export default class Game {
         }
 
         if (this.waveCount === 16) this.rows++;
-        else if (this.waveCount === 21) this.rows++;
+        else if (this.waveCount === 21) this.columns++;
 
         const wave = new Wave(this);
         this.waves.push(wave);
