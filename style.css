@@ -15,6 +15,10 @@ p {
     font-family: 'Pixel';
 }
 
+body {
+    background: url('./images/blue.png');
+}
+
 #canvas {
     border: 5px solid black;
     position: absolute;
