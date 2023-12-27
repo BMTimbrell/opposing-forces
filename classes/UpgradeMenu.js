@@ -253,7 +253,7 @@ export default class UpgradeMenu {
                     50
                 ),
                 name: 'rocketDamage',
-                upgradeCost: 400,
+                upgradeCost: 300,
                 isEnabled: false
             },
             {
@@ -292,7 +292,7 @@ export default class UpgradeMenu {
                     50
                 ),
                 name: 'dualShot',
-                upgradeCost: 500,
+                upgradeCost: 600,
                 isEnabled: true
             },
             {
@@ -357,7 +357,7 @@ export default class UpgradeMenu {
                     50
                 ),
                 name: 'rapidFire_2',
-                upgradeCost: 800,
+                upgradeCost: 700,
                 isEnabled: false
             },
             {
@@ -370,7 +370,7 @@ export default class UpgradeMenu {
                     50
                 ),
                 name: 'reducedRocketCooldown',
-                upgradeCost: 500,
+                upgradeCost: 600,
                 isEnabled: false
             }
         ]
