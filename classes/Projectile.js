@@ -276,3 +276,136 @@ export class BossProjectile_3 extends EnemyProjectile {
         this.speed = 7;
     }
 }
+
+export class BossBomb extends EnemyProjectile {
+    constructor(game) {
+        super(game);
+        this.damage = 3;
+        this.type = 'bossBomb';
+        this.frameX = 33;
+        this.frameY = 25;
+        this.width = 6 * this.game.scale;
+        this.height = 6 * this.game.scale;
+        this.speed = 4;
+        this.explosionTimer = 60;
+        this.isBoomTime = false;
+        this.canDamage = false;
+        this.explosionImage = document.getElementById('explosion');
+        this.explosionStartFrame = 0;
+        this.explosionFrameX = this.explosionStartFrame;
+        this.explosionFrameY = 0;
+        this.animationDelay = 4;
+        this.animationTimer = this.animationDelay;
+        this.maxAnimationFrame = this.explosionStartFrame + 4;
+        this.maxHealth = 15;
+        this.health = this.maxHealth;
+        this.hBarHeight = 10;
+    }
+
+    draw(context) {
+        if (!this.free && !this.isBoomTime) {
+            context.save();
+            context.strokeRect(this.x, this.y - this.hBarHeight - 5, this.width, this.hBarHeight);
+            context.filleStyle = 'gray';
+            context.fillRect(this.x, this.y - this.hBarHeight - 5, this.width, this.hBarHeight);
+            context.fillStyle = (
+                this.health / this.maxHealth < 0.25 ? 'red' : 
+                this.health / this.maxHealth < 0.5 ? 'gold' : 
+                'green'
+            );
+            context.fillRect(
+                this.x, this.y - this.hBarHeight - 5, 
+                this.width * (this.health / this.maxHealth), 
+                this.hBarHeight
+            );
+            context.restore();
+
+            context.drawImage(
+                this.image, 
+                this.frameX, 
+                this.frameY, 
+                this.width / this.game.scale, 
+                this.height / this.game.scale,
+                this.x,
+                this.y,
+                this.width,
+                this.height
+            );
+        } else if (!this.free && this.isBoomTime) {
+            context.drawImage(
+                this.explosionImage, 
+                this.explosionFrameX * 16, 
+                this.explosionFrameY, 
+                16, 
+                16,
+                this.x,
+                this.y,
+                this.width,
+                this.height
+            );
+            
+        }
+    }
+
+    update(x, y) {
+        super.update(x, y);
+
+        if (!this.isBoomTime && this.y + this.height >= this.game.height) {
+            this.speed = 0;
+            this.explosionTimer--;
+            if (this.explosionTimer === 0) {
+                this.explode();
+            }
+        }
+
+        // exploding
+        if (this.isBoomTime) {
+            this.animationTimer--;
+            if (this.animationTimer <= 0) {
+                this.animationTimer = this.animationDelay;
+                this.explosionFrameX++;
+                if (this.explosionFrameX >= this.maxAnimationFrame) {
+                    this.reset();
+                }
+            }
+        }
+
+        // collision with player projectiles
+        this.game.projectilesPool.forEach(projectile => {
+            if (
+                !projectile.free &&
+                !(projectile instanceof EnemyProjectile) && 
+                this.game.checkCollision(this, projectile)
+            ) {
+                console.log(this.health);
+                this.health -= projectile.damage;
+                console.log(projectile.damage);
+                projectile.reset();
+                if (this.health <= 0) this.explode();
+            }
+        });
+    }
+
+    explode() {
+        this.isBoomTime = true;
+        this.speed = 0;
+        this.x -= (160 - this.width) / 2;
+        this.y -= (160 - this.height) / 2;
+        this.width = 160;
+        this.height = 160;
+        this.canDamage = true;
+    }
+
+    reset() {
+        this.canDamage = false;
+        this.isBoomTime = false;
+        this.explosionFrameX = this.explosionStartFrame;
+        this.explosionTimer = 60;
+        this.animationTimer = this.animationDelay;
+        this.speed = 4;
+        this.width = 6 * this.game.scale;
+        this.height = 6 * this.game.scale;
+        this.health = this.maxHealth;
+        super.reset();
+    }
+}

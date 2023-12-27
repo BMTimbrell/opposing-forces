@@ -6,7 +6,8 @@ import Projectile,
         Rocket, 
         BossProjectile_1, 
         BossProjectile_2,
-        BossProjectile_3, 
+        BossProjectile_3,
+        BossBomb, 
         DoubleShooterProjectile 
     } from './Projectile.js';
 import Wave from './Wave.js';
@@ -31,7 +32,7 @@ export default class Game {
         this.upgradeMenu = new UpgradeMenu(this);
 
         this.projectilesPool = [];
-        this.numberOfProjectiles = 20;
+        this.numberOfProjectiles = 30;
         this.createProjectiles();
 
         this.bossWaves = [8, 12, 16];
@@ -116,11 +117,15 @@ export default class Game {
             this.projectilesPool.push(new DoubleShooterProjectile(this));
         }
 
-        for (let i = 0; i < 10; i++) {
+        for (let i = 0; i < 15; i++) {
             this.projectilesPool.push(new EnemyProjectile(this));
             this.projectilesPool.push(new BossProjectile_1(this));
             this.projectilesPool.push(new BossProjectile_2(this));
             this.projectilesPool.push(new BossProjectile_3(this));
+        }
+
+        for (let i = 0; i < 3; i++) {
+            this.projectilesPool.push(new BossBomb(this));
         }
 
         this.projectilesPool.push(new Rocket(this));

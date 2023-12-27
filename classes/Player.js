@@ -1,4 +1,4 @@
-import { EnemyProjectile } from './Projectile.js';
+import { EnemyProjectile, BossBomb } from './Projectile.js';
 import Shield from './Shield.js';
 
 export default class Player {
@@ -152,6 +152,16 @@ export default class Player {
                 this.game.checkCollision(projectile, this) &&
                 this.lives > 0
             ) {
+                if (projectile instanceof BossBomb) {
+                    if (projectile.isBoomTime && projectile.canDamage) {
+                        projectile.canDamage = false;
+                        this.lives -= projectile.damage;
+                        if (this.lives <= 0) this.die();
+                    } else if (!projectile.isBoomTime) {
+                        projectile.explode();
+                    }
+                    return;
+                }
                 this.lives -= projectile.damage;
                 if (this.lives <= 0) this.die();
                 projectile.reset();

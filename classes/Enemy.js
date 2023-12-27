@@ -200,7 +200,7 @@ export class DoubleShooter extends Shooter {
         this.xOffset = 25;
         this.xOffset_2 = 65
         this.attackInterval = 60;
-        this.maxProjectiles = 8;
+        this.maxProjectiles = 6;
         this.animationFrameX = 9; 
         this.animationFrameY = 6;
         this.maxAnimationFrame = this.animationFrameX + 3;
@@ -347,10 +347,17 @@ export class Boss_3 extends Boss {
         this.goldDropped = 300;
         this.attackInterval = 30;
         this.projectileType = 'bossProjectile_3';
+        this.bombChance = 0.01;
     }
 
     update(x, y) {
         super.update(x, y);
+        if (Math.random() < this.bombChance) {
+            const bomb = this.game.getProjectile('bossBomb');
+            if (bomb) {
+                bomb.start(this.x + this.width / 2, this.y + this.height - this.yOffset);
+            }
+        }
     }
 
     draw(context) {
