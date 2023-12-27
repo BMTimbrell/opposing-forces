@@ -1,5 +1,14 @@
 import Player from './Player.js';
-import Projectile, { EnemyProjectile, StrongLaser, Rocket, BossProjectile_1, BossProjectile_2, DoubleShooterProjectile } from './Projectile.js';
+import Projectile, 
+    { 
+        EnemyProjectile, 
+        StrongLaser, 
+        Rocket, 
+        BossProjectile_1, 
+        BossProjectile_2,
+        BossProjectile_3, 
+        DoubleShooterProjectile 
+    } from './Projectile.js';
 import Wave from './Wave.js';
 import UpgradeMenu from './UpgradeMenu.js';
 import isBossWave from '../helper/isBossWave.js';
@@ -111,6 +120,7 @@ export default class Game {
             this.projectilesPool.push(new EnemyProjectile(this));
             this.projectilesPool.push(new BossProjectile_1(this));
             this.projectilesPool.push(new BossProjectile_2(this));
+            this.projectilesPool.push(new BossProjectile_3(this));
         }
 
         this.projectilesPool.push(new Rocket(this));

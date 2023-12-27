@@ -1,4 +1,14 @@
-import Enemy, { ArmouredEnemy, Shooter, ArmouredShooter, Boss_1, Boss_2, DoubleShooter, ArmouredDoubleShooter } from './Enemy.js';
+import Enemy, 
+    { 
+        ArmouredEnemy, 
+        Shooter, 
+        ArmouredShooter, 
+        Boss_1, 
+        Boss_2, 
+        Boss_3, 
+        DoubleShooter, 
+        ArmouredDoubleShooter 
+    } from './Enemy.js';
 import isBossWave from '../helper/isBossWave.js';
 import getWaveSpeed from '../helper/getWaveSpeed.js';
 
@@ -55,7 +65,9 @@ export default class Wave {
                 this.enemies.push(new Boss_1(this.game, 0, 0));
             } else if (this.game.waveCount === this.game.bossWaves[1]) {
                 this.enemies.push(new Boss_2(this.game, 0, 0));
-            }
+            } else if (this.game.waveCount === this.game.bossWaves[2]) {
+                this.enemies.push(new Boss_3(this.game, 0, 0));
+            } 
             return;
         }
         for (let y = 0; y < this.game.rows; y++) {

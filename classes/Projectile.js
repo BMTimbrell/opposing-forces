@@ -263,3 +263,16 @@ export class BossProjectile_2 extends EnemyProjectile {
         this.speed = 7;
     }
 }
+
+export class BossProjectile_3 extends EnemyProjectile {
+    constructor(game) {
+        super(game);
+        this.damage = 2;
+        this.type = 'bossProjectile_3';
+        this.frameX = 10;
+        this.frameY = 17;
+        this.width = 3 * this.game.scale;
+        this.height = 6 * this.game.scale;
+        this.speed = 7;
+    }
+}

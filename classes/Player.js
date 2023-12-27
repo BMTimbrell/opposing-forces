@@ -130,7 +130,7 @@ export default class Player {
         }
 
         // death animation
-        if (this.lives === 0) {
+        if (this.lives <= 0) {
             this.dAnimationTimer--;
             if (this.dAnimationTimer === 0) {
                 this.dAnimationTimer = this.dAnimationDelay;
@@ -153,7 +153,7 @@ export default class Player {
                 this.lives > 0
             ) {
                 this.lives -= projectile.damage;
-                if (this.lives === 0) this.die();
+                if (this.lives <= 0) this.die();
                 projectile.reset();
             }
         });
