@@ -8,3 +8,7 @@ Opposing Forces is a Javascript game I made using the HTML5 Canvas element. It i
 like Space Invaders, but you can earn gold by killing enemies and use it to upgrade your ship. As 
 you progress through waves, you face more and more, as well as stronger, enemies - including bosses! 
 You can play this awesome game by [clicking on this link.](https://bmtimbrell.github.io/opposing-forces)
+
+## Assets
+
+All sprites in this game were created by [Gustavo Vituri.](https://gvituri.itch.io/space-shooter)
