@@ -205,11 +205,6 @@ export class DoubleShooter extends Shooter {
         this.animationFrameY = 6;
         this.maxAnimationFrame = this.animationFrameX + 3;
     }
-
-    update(x, y) {
-        super.update(x, y);
-        this.lastShot++;
-    }
 }
 
 export class ArmouredDoubleShooter extends DoubleShooter {
@@ -222,11 +217,6 @@ export class ArmouredDoubleShooter extends DoubleShooter {
         this.yOffset = 0;
         this.xOffset = 10;
         this.xOffset_2 = 70
-    }
-
-    update(x, y) {
-        super.update(x, y);
-        this.lastShot++;
     }
 }
 
@@ -362,6 +352,7 @@ export class Boss_3 extends Boss {
             const bomb = this.game.getProjectile('bossBomb');
             if (bomb) {
                 bomb.start(this.x + this.width / 2, this.y + this.height - this.yOffset);
+                this.game.enemyProjectilesOnScreen++;
                 this.bombsFired++;
                 this.bombShot = 0;
             }
