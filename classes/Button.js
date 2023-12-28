@@ -30,7 +30,7 @@ export default class Button {
         this.hoverStyle = hoverStyle;
     }
 
-    draw(context) {
+    draw(context, disabled = false) {
         context.save();
         context.font = `${this.fontSize} Pixel`;
         context.lineWidth = 3;
@@ -39,7 +39,7 @@ export default class Button {
         const textHeight = metrics.actualBoundingBoxAscent + metrics.actualBoundingBoxDescent;
 
         // change style on mouse hover
-        if (this.game.checkCollision(this, this.mouse)) {
+        if (this.game.checkCollision(this, this.mouse) && !disabled) {
             // background
             context.fillStyle = this.hoverStyle.background;
             context.fillRect(this.x, this.y, this.width, this.height);
@@ -50,6 +50,7 @@ export default class Button {
             context.fillStyle = this.hoverStyle.textColor;
             context.fillText(this.text, this.x + (this.width - textWidth) / 2, this.y + (this.height + textHeight) / 2);
         } else {
+            if (disabled) context.globalAlpha = 0.5;
             // background
             context.fillStyle = this.style.background;
             context.fillRect(this.x, this.y, this.width, this.height);

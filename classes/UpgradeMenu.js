@@ -146,7 +146,13 @@ export default class UpgradeMenu {
             if (button.name === 'nextWaveButton') {
                 button.button.draw(context);
             } else if (!this.game.player.upgrades[button.name]) {
-                if (button.isEnabled) button.button.draw(context);
+                if (button.isEnabled) {
+                    if (this.game.gold >= button.upgradeCost) {
+                        button.button.draw(context);
+                    } else {
+                        button.button.draw(context, true);
+                    }
+                }
             }
         });
         
