@@ -217,6 +217,7 @@ export class DoubleShooter extends Shooter {
 
     update(x, y) {
         super.update(x, y);
+        // for when boss 4 spawns enemies
         if (this.speed) this.y += this.speed;
     }
 }
@@ -370,7 +371,7 @@ export class Boss_3 extends Boss {
         if (
             Math.random() < this.bombChance && 
             this.bombShot > 30 &&
-            this.bombsFired <= 5
+            this.bombsFired < 4
         ) {
             const bomb = this.game.getProjectile('bossBomb');
             if (bomb) {
