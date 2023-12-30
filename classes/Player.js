@@ -55,12 +55,18 @@ export default class Player {
 
         // horizontal movement
         if (this.lives > 0) {
-            if (this.game.keys.indexOf('a') > -1) {
+            if (
+                this.game.keys.indexOf('a') > -1 || 
+                this.game.keys.indexOf('ArrowLeft') > -1
+            ) {
                 this.x -= this.speed;
                 this.frameX = 0;
                 this.xOffset = 8;
                 if (this.shield) this.shield.x -= this.speed;
-            } else if (this.game.keys.indexOf('d') > -1) {
+            } else if (
+                this.game.keys.indexOf('d') > -1 || 
+                this.game.keys.indexOf('ArrowRight') > -1
+            ) {
                 this.x += this.speed;
                 this.frameX = 2;
                 this.xOffset = -8;
