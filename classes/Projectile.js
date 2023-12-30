@@ -312,7 +312,7 @@ export class BossBomb extends EnemyProjectile {
         this.animationDelay = 4;
         this.animationTimer = this.animationDelay;
         this.maxAnimationFrame = this.explosionStartFrame + 4;
-        this.maxHealth = 10;
+        this.maxHealth = 7;
         this.health = this.maxHealth;
         this.hBarHeight = 10;
     }

@@ -350,7 +350,7 @@ export class Boss_2 extends Boss {
 export class Boss_3 extends Boss {
     constructor(game, positionX, positionY) {
         super(game, positionX, positionY);
-        this.maxLives = 150;
+        this.maxLives = 140;
         this.lives = this.maxLives;
         this.frameX = 8;
         this.frameY = 6;
