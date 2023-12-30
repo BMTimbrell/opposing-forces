@@ -363,7 +363,7 @@ export default class UpgradeMenu {
                     50
                 ),
                 name: 'rapidFire_2',
-                upgradeCost: 700,
+                upgradeCost: 600,
                 isEnabled: false
             },
             {
@@ -376,7 +376,7 @@ export default class UpgradeMenu {
                     50
                 ),
                 name: 'reducedRocketCooldown',
-                upgradeCost: 600,
+                upgradeCost: 400,
                 isEnabled: false
             }
         ]
