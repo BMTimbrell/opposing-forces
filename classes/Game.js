@@ -105,7 +105,12 @@ export default class Game {
             }
         });
 
-
+        if (this.gameOver || this.playerWon) {
+            if (!this.highscore || this.highscore < this.score) {
+                this.highscore = this.score;
+                localStorage.setItem("highscore", JSON.stringify(this.score));
+            }
+        }
     }
 
     render(context) {
@@ -219,7 +224,8 @@ export default class Game {
             context.fillText('GAME OVER', this.width * 0.5, this.height * 0.5);
 
             context.font = '20px Pixel';
-            context.fillText('Press R to Restart!', this.width * 0.5, this.height * 0.5 + 50);
+            context.fillText(`High Score: ${this.highscore}`, this.width * 0.5, this.height * 0.5 + 50);
+            context.fillText('Press R to Restart!', this.width * 0.5, this.height * 0.5 + 100);
             context.restore();
         }
 
@@ -230,13 +236,14 @@ export default class Game {
             context.fillText('You Win!', this.width * 0.5, this.height * 0.5);
 
             context.font = '20px Pixel';
+            context.fillText(`High Score: ${this.highscore}`, this.width * 0.5, this.height * 0.5 + 50);
 
             splitLines(
                 context,
-                'Play Again\n or Continue for \nEndless Waves!', 
+                'Play Again or\n Continue for \nEndless Waves!', 
                 this.width * 0.5, 
-                this.height * 0.5 + 50, 
-                50
+                this.height * 0.5 + 100, 
+                40
             );
             
             context.shadowOffsetX = 0;
@@ -300,7 +307,7 @@ export default class Game {
         this.restartBtn = new Button(
             this, 
             (this.width - 330) / 2, 
-            this.height - 200, 
+            this.height - 180, 
             'Play Again',
             150, 
             50
@@ -309,7 +316,7 @@ export default class Game {
         this.continueBtn = new Button(
             this, 
             (this.width - 330) / 2 + 180, 
-            this.height - 200, 
+            this.height - 180, 
             'Continue',
             150, 
             50

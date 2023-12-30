@@ -124,7 +124,8 @@ export default class Enemy {
 export class ArmouredEnemy extends Enemy {
     constructor(game, positionX, positionY) {
         super(game, positionX, positionY);
-        this.lives = 2;
+        this.maxLives = 2;
+        this.lives = this.maxLives;
         this.frameX = 7;
         this.frameY = 2;
         this.goldDropped = 15;
@@ -134,7 +135,8 @@ export class ArmouredEnemy extends Enemy {
 export class Shooter extends Enemy {
     constructor(game, positionX, positionY) {
         super(game, positionX, positionY);
-        this.lives = 2;
+        this.maxLives = 2;
+        this.lives = this.maxLives;
         this.frameX = 8;
         this.frameY = 2;
         this.goldDropped = 20;
@@ -181,7 +183,8 @@ export class Shooter extends Enemy {
 export class ArmouredShooter extends Shooter {
     constructor(game, positionX, positionY) {
         super(game, positionX, positionY);
-        this.lives = 3;
+        this.maxLives = 3;
+        this.lives = this.maxLives;
         this.frameX = 4;
         this.frameY = 4;
         this.goldDropped = 25;
@@ -191,7 +194,8 @@ export class ArmouredShooter extends Shooter {
 export class DoubleShooter extends Shooter {
     constructor(game, positionX, positionY, speed) {
         super(game, positionX, positionY);
-        this.lives = 4;
+        this.maxLives = 4;
+        this.lives = this.maxLives;
         this.frameX = 4;
         this.frameY = 2;
         this.goldDropped = 30;
@@ -216,7 +220,8 @@ export class DoubleShooter extends Shooter {
 export class ArmouredDoubleShooter extends DoubleShooter {
     constructor(game, positionX, positionY, speed) {
         super(game, positionX, positionY, speed);
-        this.lives = 6;
+        this.maxLives = 6;
+        this.lives = this.maxLives;
         this.frameX = 7;
         this.frameY = 4;
         this.goldDropped = 35;
@@ -294,8 +299,8 @@ export class Boss extends Enemy {
 export class Boss_1 extends Boss {
     constructor(game, positionX, positionY) {
         super(game, positionX, positionY);
-        this.lives = 30;
-        this.maxLives = this.lives;
+        this.maxLives = 30;
+        this.lives = this.maxLives;
         this.frameX = 4;
         this.frameY = 6;
         this.shootChance = 0.015;
@@ -317,8 +322,8 @@ export class Boss_1 extends Boss {
 export class Boss_2 extends Boss {
     constructor(game, positionX, positionY) {
         super(game, positionX, positionY);
-        this.lives = 70;
-        this.maxLives = this.lives;
+        this.maxLives = 70;
+        this.lives = this.maxLives;
         this.frameX = 6;
         this.frameY = 6;
         this.shootChance = 0.02;
@@ -341,8 +346,8 @@ export class Boss_2 extends Boss {
 export class Boss_3 extends Boss {
     constructor(game, positionX, positionY) {
         super(game, positionX, positionY);
-        this.lives = 150;
-        this.maxLives = this.lives;
+        this.maxLives = 150;
+        this.lives = this.maxLives;
         this.frameX = 8;
         this.frameY = 6;
         this.shootChance = 0.02;
@@ -382,8 +387,8 @@ export class Boss_3 extends Boss {
 export class Boss_4 extends Boss {
     constructor(game, positionX, positionY) {
         super(game, positionX, positionY);
-        this.lives = 120;
-        this.maxLives = this.lives;
+        this.maxLives = 120;
+        this.lives = this.maxLives;
         this.frameX = 4;
         this.frameY = 8;
         this.shootChance = 0.02;
