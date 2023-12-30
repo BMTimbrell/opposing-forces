@@ -150,7 +150,7 @@ export class Rocket extends Projectile {
                     const boss = this.game.waves[0].enemies.find(
                         enemy => enemy instanceof Boss_4
                     );
-                    boss.enemies.forEach(enemy => {
+                    boss?.enemies.forEach(enemy => {
                         if (this.game.checkCollision(this, enemy)) {
                             enemy.hit(this.damage);
                         }
