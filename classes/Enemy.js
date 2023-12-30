@@ -94,8 +94,12 @@ export default class Enemy {
             if (!(this instanceof Boss)) {
                 this.lives = 0;
                 this.game.player.lives--;
+                this.game.score--;
             } else {
-                if (!this.game.player.shield) this.game.player.lives = 0;
+                if (!this.game.player.shield) {
+                    this.game.score--;
+                    this.game.player.lives = 0;
+                }
             }
             if (this.game.player.lives <= 0) this.game.player.die();
         }

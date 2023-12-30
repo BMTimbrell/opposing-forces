@@ -165,6 +165,7 @@ export default class Player {
                     return;
                 }
                 this.lives -= projectile.damage;
+                this.game.score--;
                 if (this.lives <= 0) this.die();
                 projectile.reset();
             }
