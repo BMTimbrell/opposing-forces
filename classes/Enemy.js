@@ -151,7 +151,7 @@ export class Shooter extends Enemy {
         this.animationFrameY = 6;
         this.maxAnimationFrame = this.animationFrameX + 3;
         this.numOfShots = 1;
-        this.maxProjectiles = 3;
+        this.maxProjectiles = 2;
     }
 
     update(x, y) {
@@ -208,7 +208,7 @@ export class DoubleShooter extends Shooter {
         this.xOffset = 25;
         this.xOffset_2 = 65
         this.attackInterval = 60;
-        this.maxProjectiles = 4;
+        this.maxProjectiles = 3;
         this.animationFrameX = 9; 
         this.animationFrameY = 6;
         this.maxAnimationFrame = this.animationFrameX + 3;
