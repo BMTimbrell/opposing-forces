@@ -358,7 +358,7 @@ export class Boss_3 extends Boss {
         this.xOffset = 1;
         this.yOffset = 20;
         this.goldDropped = 300;
-        this.attackInterval = 30;
+        this.attackInterval = 80;
         this.projectileType = 'bossProjectile_3';
         this.bombChance = 0.01;
         this.bombShot = 30;
