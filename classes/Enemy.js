@@ -189,7 +189,7 @@ export class ArmouredShooter extends Shooter {
 }
 
 export class DoubleShooter extends Shooter {
-    constructor(game, positionX, positionY) {
+    constructor(game, positionX, positionY, speed) {
         super(game, positionX, positionY);
         this.lives = 4;
         this.frameX = 4;
@@ -200,16 +200,22 @@ export class DoubleShooter extends Shooter {
         this.xOffset = 25;
         this.xOffset_2 = 65
         this.attackInterval = 60;
-        this.maxProjectiles = 6;
+        this.maxProjectiles = 5;
         this.animationFrameX = 9; 
         this.animationFrameY = 6;
         this.maxAnimationFrame = this.animationFrameX + 3;
+        this.speed = speed;
+    }
+
+    update(x, y) {
+        super.update(x, y);
+        if (this.speed) this.y += this.speed;
     }
 }
 
 export class ArmouredDoubleShooter extends DoubleShooter {
-    constructor(game, positionX, positionY) {
-        super(game, positionX, positionY);
+    constructor(game, positionX, positionY, speed) {
+        super(game, positionX, positionY, speed);
         this.lives = 6;
         this.frameX = 7;
         this.frameY = 4;
@@ -217,6 +223,11 @@ export class ArmouredDoubleShooter extends DoubleShooter {
         this.yOffset = 0;
         this.xOffset = 10;
         this.xOffset_2 = 70
+        this.speed = speed;
+    }
+
+    update(x, y) {
+        super.update(x, y);
     }
 }
 
@@ -230,13 +241,14 @@ export class Boss extends Enemy {
         this.lastShot = 0;
         this.attackInterval = 50;
         this.hBarHeight = 15;
+        this.maxProjectiles = 4;
     }
 
     update(x, y) {
         super.update(x, y);
         if (
             Math.random() < this.shootChance && 
-            this.game.enemyProjectilesOnScreen < 4 && 
+            this.game.enemyProjectilesOnScreen < this.maxProjectiles && 
             this.lastShot > this.attackInterval &&
             this.lives > 0
         ) {
@@ -250,13 +262,15 @@ export class Boss extends Enemy {
                     this.y + this.height - this.yOffset
                 );
                 projectile_2.start(
-                    this.x + this.width - projectile_2.width / 2 + this.xOffset, 
+                    this.x + this.width - projectile_2.width / 2 - this.xOffset, 
                     this.y + this.height - this.yOffset
                 );
                 this.game.enemyProjectilesOnScreen += 2;
             }
         }
         this.lastShot++;
+        
+        if (this.lives <= 0) this.game.waves[0].speedX = 0;
     }
 
     draw(context) {
@@ -362,5 +376,101 @@ export class Boss_3 extends Boss {
 
     draw(context) {
         super.draw(context);
+    }
+}
+
+export class Boss_4 extends Boss {
+    constructor(game, positionX, positionY) {
+        super(game, positionX, positionY);
+        this.lives = 120;
+        this.maxLives = this.lives;
+        this.frameX = 4;
+        this.frameY = 8;
+        this.shootChance = 0.02;
+        this.xOffset = 20;
+        this.yOffset = 80;
+        this.goldDropped = 400;
+        this.attackInterval = 30;
+        this.projectileType = 'doubleShooterProjectile';
+        this.lastShot_2 = this.attackInterval;
+        this.enemies = [
+            new ArmouredDoubleShooter(this.game, 0, 0, 2),
+            new DoubleShooter(this.game, this.game.enemySize, 0, 2),
+            new ArmouredDoubleShooter(this.game, 3 * this.game.enemySize, 0, 2),
+            new DoubleShooter(this.game, 5 * this.game.enemySize, 0, 2),
+            new ArmouredDoubleShooter(this.game, 6 * this.game.enemySize, 0, 2)
+        ];
+        this.specialAttackTimer = 100;
+        this.specialAttack = false;
+        this.maxProjectiles = 100;
+    }
+
+    update(x, y) {
+        super.update(x, y);
+         if (
+             Math.random() < this.shootChance && 
+             this.lastShot_2 > this.attackInterval &&
+             this.lives > 0 &&
+             this.lives / this.maxLives < 0.5
+         ) {
+             this.lastShot_2 = 0;
+             const projectiles = this.game.getProjectile(this.projectileType, 2);
+             const projectile_1 = projectiles[0];
+             const projectile_2 = projectiles[1];
+             if (projectile_1 && projectile_2) {
+                 projectile_1.start(
+                     this.x + projectile_1.width / 2 + this.xOffset + 17, 
+                     this.y + this.height - this.yOffset + 20
+                 );
+                 projectile_2.start(
+                     this.x + this.width - projectile_2.width / 2 - this.xOffset - 17, 
+                     this.y + this.height - this.yOffset + 20
+                 );
+                 this.game.enemyProjectilesOnScreen += 2;
+             }
+         }
+         this.lastShot_2++;
+
+        // spawn enemies when boss is only enemy left or boss' health is less than half of max health
+        if (
+            (this.game.waves[0].enemies.length === 1 && this.game.waves[0].enemies[0] === this) || 
+            this.lives / this.maxLives < 0.5
+        ) {
+            this.enemies.forEach(enemy => {
+                enemy.update(0, enemy.y + enemy.speed);
+            });
+            this.enemies = this.enemies.filter(enemy => !enemy.markedForDeletion);
+        }
+
+        // special attack condition
+        if (this.lives / this.maxLives < 0.5) {
+            if (this.specialAttackTimer > 0) 
+                this.specialAttack = true;
+             else if (this.specialAttackTimer <= 0 && this.specialAttack) {
+                this.game.waves[0].speedX = Math.random() < 0.5 ? 1 : -1;
+                this.shootChance = 0.02;
+                this.specialAttack = false;
+                this.attackInterval = 30;
+            }
+        }
+
+        if (this.specialAttack) {
+            this.shootChance = 1;
+            this.specialAttackTimer--;
+            this.game.waves[0].speedX = 0;
+            this.attackInterval = 10;
+        }
+    }
+
+    draw(context) {
+        super.draw(context);
+        if (
+            (this.game.waves[0].enemies.length === 1 && this.game.waves[0].enemies[0] === this) || 
+            this.lives / this.maxLives < 0.5
+        ) {
+            this.enemies.forEach(enemy => {
+                enemy.draw(context);
+            });
+        }
     }
 }

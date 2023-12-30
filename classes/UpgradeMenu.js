@@ -337,7 +337,7 @@ export default class UpgradeMenu {
                     50
                 ),
                 name: 'increasedLives_2',
-                upgradeCost: 100,
+                upgradeCost: 150,
                 isEnabled: false
             },
             {

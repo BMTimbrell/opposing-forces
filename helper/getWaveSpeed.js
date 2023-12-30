@@ -2,6 +2,7 @@ import isBossWave from './isBossWave.js';
 
 export default function getWaveSpeed(game, enemies) {
     return (
+        game.waveCount === game.bossWaves[3] ? 1 :
         isBossWave(game.waveCount, game.bossWaves) ? 2 :
         game.waveCount <= 8 ? 2 :
         enemies.length > 25 ? 0.5 :

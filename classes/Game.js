@@ -13,6 +13,8 @@ import Projectile,
 import Wave from './Wave.js';
 import UpgradeMenu from './UpgradeMenu.js';
 import isBossWave from '../helper/isBossWave.js';
+import splitLines from '../helper/splitLines.js';
+import Button from './Button.js';
 
 export default class Game {
     constructor(canvas) {
@@ -35,7 +37,7 @@ export default class Game {
         this.numberOfProjectiles = 20;
         this.createProjectiles();
 
-        this.bossWaves = [8, 12, 16];
+        this.bossWaves = [8, 12, 16, 20];
         this.restart();
 
         window.addEventListener('keydown', e => {
@@ -69,10 +71,10 @@ export default class Game {
     update() {
         // only update player if menu not showing and player alive 
         // or not finished death animation
-        if (!this.upgradeMenu.isShowing && !this.player.doneDying) 
+        if (!this.upgradeMenu.isShowing && !this.player.doneDying && !this.playerWon) 
             this.player.update();
 
-        // remove projectile when menu is showing
+        // remove projectiles when menu is showing
         if (this.upgradeMenu.isShowing) {
             this.projectilesPool.forEach(projectile => {
                 if (!projectile.free) projectile.reset();
@@ -86,15 +88,24 @@ export default class Game {
                 wave.enemies.length < 1 && 
                 !wave.nextWaveTrigger && 
                 !this.gameOver && 
-                !this.upgradeMenu.isShowing
+                !this.upgradeMenu.isShowing &&
+                !this.playerWon
             ) {
                 this.player.rocketCooldownTimer = this.player.rocketCooldown;
                 this.player.rocketOnCooldown = false;
-                this.upgradeMenu.isShowing = true;
+
+                if (this.waveCount !== this.bossWaves[3]) {
+                    this.upgradeMenu.isShowing = true;
+                } else {
+                    this.playerWon = true;
+                }
+
                 this.nextWave = wave;
                 if (this.player.lives < this.player.maxLives) this.player.lives++;
             }
         });
+
+
     }
 
     render(context) {
@@ -102,7 +113,7 @@ export default class Game {
 
         this.projectilesPool.forEach(projectile => projectile.draw(context));
 
-        if (!this.upgradeMenu.isShowing && !this.player.doneDying) 
+        if (!this.upgradeMenu.isShowing && !this.player.doneDying && !this.playerWon) 
             this.player.draw(context);
         
         this.drawStatusText(context);
@@ -114,6 +125,9 @@ export default class Game {
         for (let i = 0; i < this.numberOfProjectiles; i++) {
             this.projectilesPool.push(new Projectile(this));
             this.projectilesPool.push(new StrongLaser(this));
+        }
+
+        for (let i = 0; i < 50; i++) {
             this.projectilesPool.push(new DoubleShooterProjectile(this));
         }
 
@@ -199,12 +213,39 @@ export default class Game {
 
         // game over
         if (this.gameOver) {
+            context.save();
             context.textAlign = 'center';
             context.font = '50px Pixel';
             context.fillText('GAME OVER', this.width * 0.5, this.height * 0.5);
 
             context.font = '20px Pixel';
             context.fillText('Press R to Restart!', this.width * 0.5, this.height * 0.5 + 50);
+            context.restore();
+        }
+
+        // player wins
+        if (this.playerWon) {
+            context.textAlign = 'center';
+            context.font = '50px Pixel';
+            context.fillText('You Win!', this.width * 0.5, this.height * 0.5);
+
+            context.font = '20px Pixel';
+
+            splitLines(
+                context,
+                'Play Again\n or Continue for \nEndless Waves!', 
+                this.width * 0.5, 
+                this.height * 0.5 + 50, 
+                50
+            );
+            
+            context.shadowOffsetX = 0;
+            context.shadowOffsetY = 0;
+            context.textAlign = 'left';
+
+            this.restartBtn.draw(context);
+            this.continueBtn.draw(context);
+            this.canvas.addEventListener('click', this.handleClick.bind(this));
         }
         context.restore();
     }
@@ -224,7 +265,7 @@ export default class Game {
             this.rows++;
         }
 
-        if (this.waveCount === 16) this.rows++;
+        if (this.waveCount === 17) this.rows++;
         else if (this.waveCount === 21) this.columns++;
 
         const wave = new Wave(this);
@@ -246,12 +287,44 @@ export default class Game {
         this.nextWave = null;
 
         this.score = 0;
+        this.highscore = JSON.parse(localStorage.getItem('highscore'));
         this.gold = 0;
         this.gameOver = false;
+        this.playerWon = false;
 
         this.projectilesPool.forEach(projectile => {
             if (!projectile.free) projectile.reset();
         });
         this.enemyProjectilesOnScreen = 0;
+
+        this.restartBtn = new Button(
+            this, 
+            (this.width - 330) / 2, 
+            this.height - 200, 
+            'Play Again',
+            150, 
+            50
+        );
+
+        this.continueBtn = new Button(
+            this, 
+            (this.width - 330) / 2 + 180, 
+            this.height - 200, 
+            'Continue',
+            150, 
+            50
+        );
+    }
+
+    handleClick() {
+        if (this.playerWon && this.checkCollision(this.continueBtn, this.mouse)) {
+            this.upgradeMenu.isShowing = true;
+            this.playerWon = false;
+        }
+
+        if (this.playerWon && this.checkCollision(this.restartBtn, this.mouse)) {
+            this.playerWon = false;
+            this.restart();
+        }
     }
 }

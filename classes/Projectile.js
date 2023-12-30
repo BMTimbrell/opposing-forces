@@ -1,3 +1,5 @@
+import { Boss_4 } from "./Enemy.js";
+
 export default class Projectile {
     constructor(game) {
         this.game = game;
@@ -141,7 +143,20 @@ export class Rocket extends Projectile {
                 }
             }
             
+            // damage enemies
             if (this.canDamage) {
+                // damage enemies spawned by boss
+                if (this.game.bossWaves[3] === this.game.waveCount) {
+                    const boss = this.game.waves[0].enemies.find(
+                        enemy => enemy instanceof Boss_4
+                    );
+                    boss.enemies.forEach(enemy => {
+                        if (this.game.checkCollision(this, enemy)) {
+                            enemy.hit(this.damage);
+                        }
+                    });
+                }
+                // damage regular enemies
                 this.game.waves[0].enemies.forEach(enemy => {
                     if (this.game.checkCollision(this, enemy)) {
                         enemy.hit(this.damage);

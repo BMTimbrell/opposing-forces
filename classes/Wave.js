@@ -7,7 +7,8 @@ import Enemy,
         Boss_2, 
         Boss_3, 
         DoubleShooter, 
-        ArmouredDoubleShooter 
+        ArmouredDoubleShooter, 
+        Boss_4
     } from './Enemy.js';
 import isBossWave from '../helper/isBossWave.js';
 import getWaveSpeed from '../helper/getWaveSpeed.js';
@@ -15,8 +16,15 @@ import getWaveSpeed from '../helper/getWaveSpeed.js';
 export default class Wave {
     constructor(game) {
         this.game = game;
-        this.width = this.game.columns * this.game.enemySize;
-        this.height = this.game.rows * this.game.enemySize;
+        this.width = (
+            this.game.waveCount === this.game.bossWaves[3] ? 6 * this.game.enemySize : 
+            isBossWave(this.game.waveCount, this.game.bossWaves) ? 2 * this.game.enemySize :
+            this.game.columns * this.game.enemySize
+        );
+        this.height = (
+            isBossWave(this.game.waveCount, this.game.bossWaves) ? 2 * this.game.enemySize :
+            this.game.rows * this.game.enemySize
+        );
         this.x = this.game.width * 0.5 - this.width * 0.5;
         this.y = -this.height;
         this.enemies = [];
@@ -31,11 +39,14 @@ export default class Wave {
         if (this.y < 0) this.y += 5;
 
         // change speed based on wave number and enemies on screen
-        this.updateSpeed();
+        if (!isBossWave(this.game.waveCount, this.game.bossWaves)) {
+            this.updateSpeed();
+        }
 
         if (
-            this.checkLeftMostEnemy() < 0 || 
-            this.checkRightMostEnemy() > this.game.width
+            (this.checkLeftMostEnemy() < 0 || 
+            this.checkRightMostEnemy() > this.game.width) &&
+            this.speedX !== 0
         ) {
             this.speedX *= -1;
             if (isBossWave(this.game.waveCount, this.game.bossWaves)) {
@@ -67,7 +78,15 @@ export default class Wave {
                 this.enemies.push(new Boss_2(this.game, 0, 0));
             } else if (this.game.waveCount === this.game.bossWaves[2]) {
                 this.enemies.push(new Boss_3(this.game, 0, 0));
-            } 
+            } else if (this.game.waveCount === this.game.bossWaves[3]) {
+                this.enemies = [
+                    new ArmouredDoubleShooter(this.game, 0, 0),
+                    new DoubleShooter(this.game, this.game.enemySize, 0),
+                    new Boss_4(this.game, 2 * this.game.enemySize, 0),
+                    new DoubleShooter(this.game, 4 * this.game.enemySize, 0),
+                    new ArmouredDoubleShooter(this.game, 5 * this.game.enemySize, 0)
+                ];
+            }
             return;
         }
         for (let y = 0; y < this.game.rows; y++) {
@@ -106,7 +125,7 @@ export default class Wave {
             if (this.enemies[i].x === this.x + this.width - this.enemies[i].width) {
                 x = this.enemies[i].x + this.enemies[i].width;
                 break;
-            } else if (this.enemies[i].x >= x) {
+            } else if (this.enemies[i].x + this.enemies[i].width >= x) {
                 x = this.enemies[i].x + this.enemies[i].width;
             }
         }
